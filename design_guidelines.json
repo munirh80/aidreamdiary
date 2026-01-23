@@ -1,0 +1,191 @@
+{
+  "identity": {
+    "name": "E1",
+    "role": "The Anti-AI Designer",
+    "principles": [
+      "Fusion over Imitation",
+      "Emotion First",
+      "Content is King",
+      "Zoom In",
+      "Negative Space",
+      "Contrast"
+    ],
+    "anti_patterns": [
+      "Purple/Teal CTA overuse",
+      "Inter everywhere",
+      "Center-Everything Disease",
+      "Gradient Overload"
+    ]
+  },
+  "application": {
+    "name": "Dream Journal",
+    "type": "SaaS Web App",
+    "theme_mode": "dark",
+    "aesthetic": "Mystical, Ethereal, Night Sky, Deep Ocean",
+    "emotional_tone": "Introspective, Magical, Calm, Subconscious"
+  },
+  "typography": {
+    "fonts": {
+      "heading": {
+        "family": "Cormorant Garamond",
+        "fallback": "serif",
+        "weights": ["400", "600", "700"],
+        "usage": "All H1-H3 headings, Feature titles, Pull quotes"
+      },
+      "body": {
+        "family": "Manrope",
+        "fallback": "sans-serif",
+        "weights": ["300", "400", "500", "700"],
+        "usage": "Paragraphs, UI labels, Inputs, Buttons"
+      },
+      "mono": {
+        "family": "JetBrains Mono",
+        "fallback": "monospace",
+        "usage": "Code snippets, Data tags, Timestamps"
+      }
+    },
+    "scale": {
+      "h1": "text-5xl md:text-7xl font-serif tracking-tight leading-none",
+      "h2": "text-4xl md:text-5xl font-serif tracking-tight",
+      "h3": "text-2xl md:text-3xl font-serif font-semibold",
+      "body_lg": "text-lg md:text-xl font-sans leading-relaxed text-slate-300",
+      "body_base": "text-base font-sans leading-relaxed text-slate-400",
+      "caption": "text-xs font-mono uppercase tracking-widest text-slate-500"
+    }
+  },
+  "colors": {
+    "palette": {
+      "background": {
+        "default": "#020617",
+        "secondary": "#0F172A",
+        "overlay": "rgba(2, 6, 23, 0.8)"
+      },
+      "primary": {
+        "main": "#A855F7",
+        "hover": "#9333EA",
+        "glow": "rgba(168, 85, 247, 0.5)"
+      },
+      "secondary": {
+        "main": "#22D3EE",
+        "hover": "#06B6D4",
+        "glow": "rgba(34, 211, 238, 0.5)"
+      },
+      "accent": {
+        "rose": "#F43F5E",
+        "amber": "#F59E0B",
+        "emerald": "#10B981"
+      },
+      "neutral": {
+        "white": "#F8FAFC",
+        "grey_100": "#F1F5F9",
+        "grey_400": "#94A3B8",
+        "grey_800": "#1E293B",
+        "grey_900": "#0F172A"
+      }
+    },
+    "semantic": {
+      "bg_app": "bg-[#020617]",
+      "bg_card": "bg-slate-900/40",
+      "text_primary": "text-slate-50",
+      "text_secondary": "text-slate-400",
+      "text_muted": "text-slate-600",
+      "border_subtle": "border-white/5",
+      "border_highlight": "border-white/10"
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": {
+      "default": "backdrop-blur-xl bg-slate-900/40 border border-white/10 shadow-2xl",
+      "heavy": "backdrop-blur-2xl bg-black/60 border border-white/5",
+      "light": "backdrop-blur-md bg-white/5 border border-white/20"
+    },
+    "borders": {
+      "glow": "border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.15)]",
+      "subtle": "border border-white/5"
+    },
+    "shadows": {
+      "neon": "shadow-[0_0_20px_rgba(34,211,238,0.15)]",
+      "deep": "shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+    },
+    "gradients": {
+      "nebula": "bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900",
+      "starlight": "bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-800 via-slate-950 to-black"
+    }
+  },
+  "layout": {
+    "spacing": {
+      "container_padding": "p-6 md:p-12 lg:p-24",
+      "section_gap": "gap-12 md:gap-24",
+      "element_gap": "gap-4 md:gap-8"
+    },
+    "grid": {
+      "bento_dashboard": "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-[minmax(180px,auto)]",
+      "journal_feed": "grid grid-cols-1 md:grid-cols-12 gap-8"
+    },
+    "containers": {
+      "max_width": "max-w-7xl mx-auto",
+      "readable": "max-w-2xl mx-auto"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "rounded-full px-8 py-3 bg-white text-black font-semibold hover:bg-slate-200 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)]",
+      "secondary": "rounded-full px-8 py-3 bg-transparent border border-white/20 text-white hover:bg-white/10 transition-all duration-300",
+      "ghost": "text-slate-400 hover:text-white transition-colors duration-200"
+    },
+    "cards": {
+      "dream_entry": "group relative overflow-hidden rounded-2xl bg-slate-900/40 border border-white/5 p-6 hover:border-purple-500/30 transition-all duration-500 hover:shadow-[0_0_30px_rgba(168,85,247,0.1)]",
+      "stat_widget": "rounded-3xl bg-black/40 border border-white/5 p-6 flex flex-col justify-between backdrop-blur-md"
+    },
+    "inputs": {
+      "default": "bg-slate-950/50 border-white/10 focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 rounded-xl px-4 py-3 text-slate-200 placeholder:text-slate-600 transition-all duration-300",
+      "textarea": "bg-transparent border-none focus:ring-0 text-xl md:text-2xl leading-relaxed text-slate-200 placeholder:text-slate-700 resize-none w-full min-h-[300px]"
+    },
+    "navigation": {
+      "sidebar": "fixed left-0 top-0 h-full w-64 bg-black/90 backdrop-blur-xl border-r border-white/5 z-50 hidden md:flex flex-col p-6",
+      "mobile_nav": "fixed bottom-0 left-0 w-full bg-black/90 backdrop-blur-xl border-t border-white/5 z-50 md:hidden flex justify-around p-4"
+    }
+  },
+  "assets": {
+    "backgrounds": [
+      {
+        "url": "https://images.unsplash.com/photo-1615638728221-e4380fd2962e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTJ8MHwxfHNlYXJjaHwxfHxuZWJ1bGElMjBzdGFycyUyMG5pZ2h0JTIwc2t5JTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3NjkyMDI3NjN8MA&ixlib=rb-4.1.0&q=85",
+        "category": "hero_bg",
+        "description": "Orion Nebula - Deep purple/blue cosmic background"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1624183720151-7396650072a9?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTJ8MHwxfHNlYXJjaHwyfHxuZWJ1bGElMjBzdGFycyUyMG5pZ2h0JTIwc2t5JTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3NjkyMDI3NjN8MA&ixlib=rb-4.1.0&q=85",
+        "category": "auth_bg",
+        "description": "Purple and black galaxy sky"
+      }
+    ],
+    "abstract_art": [
+      {
+        "url": "https://images.unsplash.com/photo-1768933498366-b38aec8bdb5a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHwxfHxzdXJyZWFsJTIwZHJlYW0lMjBhYnN0cmFjdCUyMGFydHxlbnwwfHx8fDE3NjkyMDI3NjV8MA&ixlib=rb-4.1.0&q=85",
+        "category": "dream_placeholder",
+        "description": "Surreal cosmic design with eyes"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1761646592828-9e67256f1eee?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHwyfHxzdXJyZWFsJTIwZHJlYW0lMjBhYnN0cmFjdCUyMGFydHxlbnwwfHx8fDE3NjkyMDI3NjV8MA&ixlib=rb-4.1.0&q=85",
+        "category": "insight_card_bg",
+        "description": "Abstract sphere and geometric patterns"
+      }
+    ]
+  },
+  "motion": {
+    "transitions": "transition-all duration-300 ease-out",
+    "hover_lift": "hover:-translate-y-1 hover:shadow-lg",
+    "fade_in": "animate-in fade-in duration-700 slide-in-from-bottom-4",
+    "slow_spin": "animate-spin-slow"
+  },
+  "universal_guidelines": [
+    "Do not use gradients for text unless it is a very large heading.",
+    "Avoid 'Inter' font for headings. Use Cormorant Garamond.",
+    "Use 2-3x more padding than usual. Let the design breathe.",
+    "All interactive elements must have a hover state that changes color or opacity.",
+    "Use 'sonner' for toasts.",
+    "Do not use native HTML select or date inputs; use Shadcn components.",
+    "Ensure all interactive elements have data-testid attributes."
+  ],
+  "instructions_to_main_agent": "Implement the design using the provided colors and typography. Focus on the 'Glassmorphism' effect for cards and containers. Use the provided Unsplash images for backgrounds where appropriate. Ensure the app feels 'mystical' but functional."
+}
