@@ -291,6 +291,7 @@ Provide a thoughtful interpretation covering:
 @api_router.get("/stats")
 async def get_stats(current_user: dict = Depends(get_current_user)):
     user_id = current_user["id"]
+    from datetime import timedelta
     
     # Get total dreams count
     total_dreams = await db.dreams.count_documents({"user_id": user_id})
@@ -312,18 +313,199 @@ async def get_stats(current_user: dict = Depends(get_current_user)):
     top_themes = sorted(theme_counts.items(), key=lambda x: x[1], reverse=True)[:5]
     
     # Dreams this week
-    from datetime import timedelta
     week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
     dreams_this_week = await db.dreams.count_documents({
         "user_id": user_id,
         "date": {"$gte": week_ago[:10]}
     })
     
+    # Calculate streak
+    streak = await calculate_streak(user_id)
+    
     return {
         "total_dreams": total_dreams,
         "dreams_this_week": dreams_this_week,
         "top_tags": [{"name": t[0], "count": t[1]} for t in top_tags],
-        "top_themes": [{"name": t[0], "count": t[1]} for t in top_themes]
+        "top_themes": [{"name": t[0], "count": t[1]} for t in top_themes],
+        "current_streak": streak["current"],
+        "longest_streak": streak["longest"]
+    }
+
+async def calculate_streak(user_id: str):
+    from datetime import timedelta
+    
+    # Get all dream dates sorted descending
+    dreams = await db.dreams.find(
+        {"user_id": user_id}, 
+        {"_id": 0, "date": 1}
+    ).sort("date", -1).to_list(1000)
+    
+    if not dreams:
+        return {"current": 0, "longest": 0}
+    
+    # Get unique dates
+    dates = sorted(set(d["date"][:10] for d in dreams), reverse=True)
+    
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")
+    
+    # Calculate current streak
+    current_streak = 0
+    if dates and (dates[0] == today or dates[0] == yesterday):
+        check_date = datetime.strptime(dates[0], "%Y-%m-%d")
+        for date_str in dates:
+            date = datetime.strptime(date_str, "%Y-%m-%d")
+            if (check_date - date).days <= 1:
+                current_streak += 1
+                check_date = date
+            else:
+                break
+    
+    # Calculate longest streak
+    longest_streak = 0
+    if dates:
+        streak = 1
+        for i in range(1, len(dates)):
+            prev = datetime.strptime(dates[i-1], "%Y-%m-%d")
+            curr = datetime.strptime(dates[i], "%Y-%m-%d")
+            if (prev - curr).days == 1:
+                streak += 1
+            else:
+                longest_streak = max(longest_streak, streak)
+                streak = 1
+        longest_streak = max(longest_streak, streak)
+    
+    return {"current": current_streak, "longest": longest_streak}
+
+# ============== CALENDAR ROUTE ==============
+
+@api_router.get("/dreams/calendar/{year}/{month}")
+async def get_dreams_calendar(year: int, month: int, current_user: dict = Depends(get_current_user)):
+    """Get dreams for a specific month for calendar view"""
+    user_id = current_user["id"]
+    
+    # Calculate date range
+    start_date = f"{year:04d}-{month:02d}-01"
+    if month == 12:
+        end_date = f"{year+1:04d}-01-01"
+    else:
+        end_date = f"{year:04d}-{month+1:02d}-01"
+    
+    dreams = await db.dreams.find({
+        "user_id": user_id,
+        "date": {"$gte": start_date, "$lt": end_date}
+    }, {"_id": 0}).to_list(100)
+    
+    # Group by date
+    by_date = {}
+    for dream in dreams:
+        date = dream["date"][:10]
+        if date not in by_date:
+            by_date[date] = []
+        by_date[date].append({
+            "id": dream["id"],
+            "title": dream["title"],
+            "themes": dream.get("themes", [])
+        })
+    
+    return {"dreams_by_date": by_date}
+
+# ============== PATTERN ANALYSIS ROUTE ==============
+
+@api_router.get("/analysis/patterns")
+async def get_pattern_analysis(current_user: dict = Depends(get_current_user)):
+    """Analyze dream patterns - recurring symbols, themes over time"""
+    user_id = current_user["id"]
+    
+    dreams = await db.dreams.find(
+        {"user_id": user_id}, 
+        {"_id": 0, "description": 1, "tags": 1, "themes": 1, "date": 1, "title": 1}
+    ).sort("date", -1).to_list(1000)
+    
+    if not dreams:
+        return {
+            "total_analyzed": 0,
+            "recurring_symbols": [],
+            "theme_trends": [],
+            "common_words": [],
+            "monthly_activity": []
+        }
+    
+    # Common dream symbols to detect
+    symbols = {
+        "water": ["water", "ocean", "sea", "river", "lake", "swimming", "drowning", "rain", "flood"],
+        "flying": ["flying", "fly", "floating", "soaring", "wings", "air"],
+        "falling": ["falling", "fall", "dropping", "cliff", "height"],
+        "chase": ["chase", "chasing", "running", "escape", "pursued", "following"],
+        "death": ["death", "dead", "dying", "funeral", "grave"],
+        "teeth": ["teeth", "tooth", "falling out", "broken teeth"],
+        "animals": ["animal", "dog", "cat", "snake", "bird", "spider", "wolf", "lion"],
+        "house": ["house", "home", "room", "door", "window", "building"],
+        "vehicle": ["car", "driving", "bus", "train", "plane", "crash"],
+        "people": ["stranger", "family", "friend", "crowd", "person", "people"]
+    }
+    
+    # Count symbol occurrences
+    symbol_counts = {s: 0 for s in symbols}
+    for dream in dreams:
+        text = (dream.get("description", "") + " " + dream.get("title", "")).lower()
+        for symbol, keywords in symbols.items():
+            if any(kw in text for kw in keywords):
+                symbol_counts[symbol] += 1
+    
+    recurring_symbols = [
+        {"symbol": s, "count": c, "percentage": round(c/len(dreams)*100, 1)}
+        for s, c in sorted(symbol_counts.items(), key=lambda x: x[1], reverse=True)
+        if c > 0
+    ][:8]
+    
+    # Theme trends over time
+    theme_by_month = {}
+    for dream in dreams:
+        month = dream["date"][:7]  # YYYY-MM
+        if month not in theme_by_month:
+            theme_by_month[month] = {}
+        for theme in dream.get("themes", []):
+            theme_by_month[month][theme] = theme_by_month[month].get(theme, 0) + 1
+    
+    theme_trends = [
+        {"month": m, "themes": [{"name": t, "count": c} for t, c in themes.items()]}
+        for m, themes in sorted(theme_by_month.items())
+    ][-6:]  # Last 6 months
+    
+    # Monthly activity
+    monthly_counts = {}
+    for dream in dreams:
+        month = dream["date"][:7]
+        monthly_counts[month] = monthly_counts.get(month, 0) + 1
+    
+    monthly_activity = [
+        {"month": m, "count": c}
+        for m, c in sorted(monthly_counts.items())
+    ][-12:]  # Last 12 months
+    
+    # Word frequency (simple)
+    import re
+    stop_words = {"the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for", "of", "with", "by", "from", "i", "me", "my", "was", "were", "is", "it", "that", "this", "had", "have", "be", "been"}
+    word_counts = {}
+    for dream in dreams:
+        text = dream.get("description", "").lower()
+        words = re.findall(r'\b[a-z]{4,}\b', text)
+        for word in words:
+            if word not in stop_words:
+                word_counts[word] = word_counts.get(word, 0) + 1
+    
+    common_words = [
+        {"word": w, "count": c}
+        for w, c in sorted(word_counts.items(), key=lambda x: x[1], reverse=True)
+    ][:15]
+    
+    return {
+        "total_analyzed": len(dreams),
+        "recurring_symbols": recurring_symbols,
+        "theme_trends": theme_trends,
+        "common_words": common_words,
+        "monthly_activity": monthly_activity
     }
 
 # ============== ROOT ==============
