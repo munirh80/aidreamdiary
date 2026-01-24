@@ -339,8 +339,18 @@ const DreamDetail = () => {
       </div>
 
       {/* Tags & Themes */}
-      {(dream.tags?.length > 0 || dream.themes?.length > 0) && (
+      {(dream.tags?.length > 0 || dream.themes?.length > 0 || dream.is_lucid) && (
         <div className="flex flex-wrap gap-2 mb-8" data-testid="dream-tags">
+          {dream.is_lucid && (
+            <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-500/30 border border-purple-500/50 text-purple-300">
+              ✨ Lucid Dream
+            </span>
+          )}
+          {dream.is_public && (
+            <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 border border-green-500/30 text-green-400">
+              <Globe className="w-3 h-3 inline mr-1" /> Public
+            </span>
+          )}
           {dream.tags?.map((tag, i) => (
             <span key={i} className="tag">{tag}</span>
           ))}
@@ -349,6 +359,34 @@ const DreamDetail = () => {
           ))}
         </div>
       )}
+
+      {/* Share Dialog */}
+      <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+        <DialogContent className="bg-slate-900 border-white/10">
+          <DialogHeader>
+            <DialogTitle className="text-white font-serif text-xl">Share Your Dream</DialogTitle>
+            <DialogDescription className="text-slate-400">
+              Anyone with this link can view your dream
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                readOnly
+                value={`${window.location.origin}/shared/${dream?.share_id}`}
+                className="flex-1 bg-slate-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-300"
+              />
+              <Button onClick={copyShareLink} variant="outline" className="border-white/20 text-white" data-testid="copy-link-button">
+                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              </Button>
+            </div>
+            <p className="text-xs text-slate-500">
+              You can make this dream private again at any time by clicking the share button.
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Description */}
       <div className="glass rounded-2xl p-6 md:p-8 mb-8">
