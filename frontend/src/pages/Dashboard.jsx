@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { PlusCircle, BookOpen, TrendingUp, Sparkles, ChevronRight, Flame, Calendar, Brain, Download } from 'lucide-react';
+import { PlusCircle, BookOpen, TrendingUp, Sparkles, ChevronRight, Flame, Calendar, Brain, Download, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -14,16 +14,32 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [recentDreams, setRecentDreams] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [achievementStats, setAchievementStats] = useState({ total_unlocked: 0, total_achievements: 0 });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [statsRes, dreamsRes] = await Promise.all([
+        const [statsRes, dreamsRes, achievementsRes] = await Promise.all([
           axios.get(`${API_URL}/stats`, getAuthHeaders()),
-          axios.get(`${API_URL}/dreams`, getAuthHeaders())
+          axios.get(`${API_URL}/dreams`, getAuthHeaders()),
+          axios.get(`${API_URL}/achievements/check`, getAuthHeaders())
         ]);
         setStats(statsRes.data);
         setRecentDreams(dreamsRes.data.slice(0, 3));
+        setAchievementStats({
+          total_unlocked: achievementsRes.data.total_unlocked,
+          total_achievements: achievementsRes.data.total_achievements
+        });
+        
+        // Show toast for newly unlocked achievements
+        if (achievementsRes.data.newly_unlocked?.length > 0) {
+          achievementsRes.data.newly_unlocked.forEach(ach => {
+            toast.success(`${ach.icon} Achievement Unlocked: ${ach.name}!`, {
+              description: ach.description,
+              duration: 5000
+            });
+          });
+        }
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
