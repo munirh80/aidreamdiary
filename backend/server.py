@@ -220,6 +220,8 @@ async def create_dream(dream_data: DreamCreate, current_user: dict = Depends(get
         "date": dream_data.date,
         "tags": dream_data.tags,
         "themes": dream_data.themes,
+        "is_lucid": dream_data.is_lucid,
+        "is_public": dream_data.is_public,
         "ai_insight": None,
         "created_at": now,
         "updated_at": now
