@@ -483,6 +483,9 @@ async def get_stats(current_user: dict = Depends(get_current_user)):
     # Get total dreams count
     total_dreams = await db.dreams.count_documents({"user_id": user_id})
     
+    # Get lucid dreams count
+    lucid_dreams = await db.dreams.count_documents({"user_id": user_id, "is_lucid": True})
+    
     # Get all dreams for tag/theme analysis
     dreams = await db.dreams.find({"user_id": user_id}, {"_id": 0, "tags": 1, "themes": 1, "date": 1}).to_list(1000)
     
@@ -509,13 +512,19 @@ async def get_stats(current_user: dict = Depends(get_current_user)):
     # Calculate streak
     streak = await calculate_streak(user_id)
     
+    # Get streak freeze info
+    settings = await db.user_settings.find_one({"user_id": user_id}, {"_id": 0})
+    streak_freezes = settings.get("streak_freeze_count", 0) if settings else 0
+    
     return {
         "total_dreams": total_dreams,
+        "lucid_dreams": lucid_dreams,
         "dreams_this_week": dreams_this_week,
         "top_tags": [{"name": t[0], "count": t[1]} for t in top_tags],
         "top_themes": [{"name": t[0], "count": t[1]} for t in top_themes],
         "current_streak": streak["current"],
-        "longest_streak": streak["longest"]
+        "longest_streak": streak["longest"],
+        "streak_freezes": streak_freezes
     }
 
 async def calculate_streak(user_id: str):
