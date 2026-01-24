@@ -353,6 +353,8 @@ def main():
         ("Update Dream", tester.test_update_dream),
         ("Generate AI Insight", tester.test_generate_ai_insight),
         ("Get User Stats", tester.test_get_stats),
+        ("Calendar Endpoint", tester.test_calendar_endpoint),
+        ("Pattern Analysis", tester.test_pattern_analysis),
         ("Invalid Token", tester.test_invalid_token),
         ("Unauthorized Access", tester.test_unauthorized_access),
         ("Delete Dream", tester.test_delete_dream),
