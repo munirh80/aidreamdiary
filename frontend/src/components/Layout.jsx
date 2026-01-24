@@ -1,11 +1,12 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { Home, BookOpen, PlusCircle, LogOut, Moon, User, Calendar, Brain } from 'lucide-react';
+import { Home, BookOpen, PlusCircle, LogOut, Moon, User, Calendar, Brain, Globe, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
@@ -24,6 +25,14 @@ const Layout = () => {
     { to: '/dreams/new', icon: PlusCircle, label: 'New Dream' },
     { to: '/calendar', icon: Calendar, label: 'Calendar' },
     { to: '/patterns', icon: Brain, label: 'Patterns' },
+    { to: '/explore', icon: Globe, label: 'Explore' },
+  ];
+
+  const mobileNavLinks = [
+    { to: '/dashboard', icon: Home, label: 'Home' },
+    { to: '/dreams', icon: BookOpen, label: 'Dreams' },
+    { to: '/dreams/new', icon: PlusCircle, label: 'New' },
+    { to: '/explore', icon: Globe, label: 'Explore' },
   ];
 
   return (
@@ -64,6 +73,11 @@ const Layout = () => {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48 bg-slate-900 border-white/10">
+              <DropdownMenuItem onClick={() => navigate('/settings')} className="text-slate-300 cursor-pointer" data-testid="settings-link">
+                <Settings className="w-4 h-4 mr-2" />
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-white/10" />
               <DropdownMenuItem onClick={handleLogout} className="text-red-400 cursor-pointer" data-testid="logout-button">
                 <LogOut className="w-4 h-4 mr-2" />
                 Sign Out
@@ -99,7 +113,7 @@ const Layout = () => {
 
       {/* Mobile Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 w-full bg-black/90 backdrop-blur-xl border-t border-white/5 z-50 md:hidden flex justify-around py-3">
-        {navLinks.map(({ to, icon: Icon, label }) => (
+        {mobileNavLinks.map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}
             to={to}
