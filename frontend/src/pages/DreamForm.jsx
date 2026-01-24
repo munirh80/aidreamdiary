@@ -261,6 +261,27 @@ const DreamForm = () => {
           </div>
         </div>
 
+        {/* Lucid Dream Toggle */}
+        <div className="glass rounded-xl p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-purple-400" />
+              </div>
+              <div>
+                <Label htmlFor="lucid-toggle" className="text-white font-medium cursor-pointer">Lucid Dream</Label>
+                <p className="text-xs text-slate-500">Were you aware you were dreaming?</p>
+              </div>
+            </div>
+            <Switch
+              id="lucid-toggle"
+              checked={isLucid}
+              onCheckedChange={setIsLucid}
+              data-testid="lucid-toggle"
+            />
+          </div>
+        </div>
+
         {/* Submit Buttons */}
         <div className="flex gap-4 pt-4">
           <Button
