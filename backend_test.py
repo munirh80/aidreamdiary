@@ -429,6 +429,65 @@ class DreamJournalAPITester:
         self.token = original_token
         return success and isinstance(response, list)
 
+    def test_achievements_endpoint(self):
+        """Test achievements endpoint"""
+        if not self.token:
+            print("❌ No token available for achievements")
+            return False
+            
+        success, response = self.run_test(
+            "Get Achievements",
+            "GET",
+            "achievements",
+            200
+        )
+        
+        expected_fields = ['achievements', 'total_unlocked', 'total_achievements']
+        if not (success and all(field in response for field in expected_fields)):
+            return False
+            
+        # Verify achievements structure
+        achievements = response.get('achievements', [])
+        if not achievements:
+            print("❌ No achievements returned")
+            return False
+            
+        # Check first achievement structure
+        first_ach = achievements[0]
+        required_ach_fields = ['id', 'name', 'description', 'icon', 'category', 'unlocked', 'progress', 'target']
+        if not all(field in first_ach for field in required_ach_fields):
+            print(f"❌ Achievement missing required fields: {first_ach}")
+            return False
+            
+        print(f"   Found {len(achievements)} achievements, {response['total_unlocked']} unlocked")
+        return True
+
+    def test_achievements_check_endpoint(self):
+        """Test achievements check endpoint for newly unlocked"""
+        if not self.token:
+            print("❌ No token available for achievements check")
+            return False
+            
+        success, response = self.run_test(
+            "Check New Achievements",
+            "GET",
+            "achievements/check",
+            200
+        )
+        
+        expected_fields = ['newly_unlocked', 'total_unlocked', 'total_achievements']
+        if not (success and all(field in response for field in expected_fields)):
+            return False
+            
+        # Verify newly_unlocked is a list
+        newly_unlocked = response.get('newly_unlocked', [])
+        if not isinstance(newly_unlocked, list):
+            print("❌ newly_unlocked should be a list")
+            return False
+            
+        print(f"   Found {len(newly_unlocked)} newly unlocked achievements")
+        return True
+
     def test_invalid_token(self):
         """Test API with invalid token"""
         original_token = self.token
