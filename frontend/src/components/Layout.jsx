@@ -26,6 +26,7 @@ const Layout = () => {
     { to: '/calendar', icon: Calendar, label: 'Calendar' },
     { to: '/patterns', icon: Brain, label: 'Patterns' },
     { to: '/explore', icon: Globe, label: 'Explore' },
+    { to: '/settings', icon: Settings, label: 'Settings' },
   ];
 
   const mobileNavLinks = [
