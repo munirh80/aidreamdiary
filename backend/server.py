@@ -247,6 +247,9 @@ async def get_dream(dream_id: str, current_user: dict = Depends(get_current_user
     )
     if not dream:
         raise HTTPException(status_code=404, detail="Dream not found")
+    # Ensure defaults for new fields
+    dream.setdefault("is_lucid", False)
+    dream.setdefault("is_public", False)
     return DreamResponse(**dream)
 
 @api_router.put("/dreams/{dream_id}", response_model=DreamResponse)
