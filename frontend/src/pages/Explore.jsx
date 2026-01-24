@@ -90,7 +90,7 @@ const Explore = () => {
       {filteredDreams.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2">
           {filteredDreams.map(dream => (
-            <Link key={dream.id} to={`/shared/${dream.id.slice(0, 8)}`}>
+            <Link key={dream.id} to={`/shared/${dream.share_id}`}>
               <div className="dream-card group glass rounded-2xl p-6 h-full" data-testid={`explore-dream-${dream.id}`}>
                 <div className="flex items-center gap-2 mb-3">
                   <User className="w-4 h-4 text-slate-500" />
