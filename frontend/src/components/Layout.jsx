@@ -49,7 +49,7 @@ const Layout = () => {
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center">
             <Moon className="w-5 h-5 text-white" />
           </div>
-          <span className="font-serif text-2xl text-white tracking-tight">Dreamscape</span>
+          <span className="font-serif text-2xl text-white tracking-tight">Dream Vault</span>
         </div>
 
         <nav className="flex-1 space-y-2">
@@ -97,7 +97,7 @@ const Layout = () => {
       <header className="fixed top-0 left-0 right-0 h-16 bg-black/90 backdrop-blur-xl border-b border-white/5 z-50 md:hidden flex items-center justify-between px-4">
         <div className="flex items-center gap-2">
           <Moon className="w-6 h-6 text-purple-400" />
-          <span className="font-serif text-xl text-white">Dreamscape</span>
+          <span className="font-serif text-xl text-white">Dream Vault</span>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -139,7 +139,7 @@ const Settings = () => {
     <div className="max-w-2xl mx-auto space-y-8 animate-fade-in" data-testid="settings-page">
       <div className="mb-8">
         <h1 className="font-serif text-3xl md:text-4xl text-white mb-2">Settings</h1>
-        <p className="text-slate-400">Customize your Dreamscape experience</p>
+        <p className="text-slate-400">Customize your Dream Vault experience</p>
       </div>
 
       {/* Dream Reminders */}

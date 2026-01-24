@@ -125,7 +125,7 @@ const DreamList = () => {
           </div>
         `).join('')}
         
-        <div class="footer">Dreamscape - Dream Journal App</div>
+        <div class="footer">Dream Vault - Dream Journal App</div>
       </body>
       </html>
     `;

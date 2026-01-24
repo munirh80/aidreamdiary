@@ -57,7 +57,7 @@ const Explore = () => {
             <div className="flex items-center gap-3 mb-2">
               <Link to="/" className="flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors">
                 <Moon className="w-6 h-6" />
-                <span className="font-serif text-xl">Dreamscape</span>
+                <span className="font-serif text-xl">Dream Vault</span>
               </Link>
             </div>
             <h1 className="font-serif text-3xl md:text-4xl text-white mb-2">
@@ -142,7 +142,7 @@ const Explore = () => {
           <p className="text-slate-400 mb-6">Be the first to share a dream with the community!</p>
           <Link to="/register">
             <Button className="rounded-full px-6 bg-white text-black hover:bg-slate-200 btn-glow">
-              Join Dreamscape
+              Join Dream Vault
             </Button>
           </Link>
         </div>

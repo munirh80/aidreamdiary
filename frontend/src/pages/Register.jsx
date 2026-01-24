@@ -29,7 +29,7 @@ const Register = () => {
 
     try {
       await register(email, password, name);
-      toast.success('Welcome to Dreamscape!');
+      toast.success('Welcome to Dream Vault!');
       navigate('/dashboard');
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to create account');
@@ -50,7 +50,7 @@ const Register = () => {
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center animate-pulse-glow">
               <Moon className="w-6 h-6 text-white" />
             </div>
-            <h1 className="font-serif text-3xl text-white tracking-tight">Dreamscape</h1>
+            <h1 className="font-serif text-3xl text-white tracking-tight">Dream Vault</h1>
           </div>
 
           <h2 className="font-serif text-2xl text-center text-white mb-2">Begin Your Journey</h2>

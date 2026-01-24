@@ -166,7 +166,7 @@ const DreamDetail = () => {
           ` : ''}
           
           <div class="footer">
-            Exported from Dreamscape - Dream Journal App<br>
+            Exported from Dream Vault - Dream Journal App<br>
             ${format(new Date(), 'MMMM d, yyyy')}
           </div>
         </body>

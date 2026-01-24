@@ -18,7 +18,7 @@ self.addEventListener('push', (event) => {
   console.log('Push notification received:', event);
   
   let data = {
-    title: 'Dreamscape Reminder',
+    title: 'Dream Vault Reminder',
     body: 'Time to record your dreams! Don\'t let them fade away.',
     icon: '/logo192.png',
     badge: '/logo192.png',

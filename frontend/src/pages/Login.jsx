@@ -22,7 +22,7 @@ const Login = () => {
 
     try {
       await login(email, password);
-      toast.success('Welcome back to Dreamscape!');
+      toast.success('Welcome back to Dream Vault!');
       navigate('/dashboard');
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to sign in');
@@ -43,7 +43,7 @@ const Login = () => {
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center animate-pulse-glow">
               <Moon className="w-6 h-6 text-white" />
             </div>
-            <h1 className="font-serif text-3xl text-white tracking-tight">Dreamscape</h1>
+            <h1 className="font-serif text-3xl text-white tracking-tight">Dream Vault</h1>
           </div>
 
           <h2 className="font-serif text-2xl text-center text-white mb-2">Welcome Back</h2>
@@ -93,7 +93,7 @@ const Login = () => {
               className="w-full h-12 rounded-full bg-white text-black font-semibold hover:bg-slate-200 transition-all duration-300 btn-glow"
               data-testid="login-submit-button"
             >
-              {loading ? 'Entering...' : 'Enter Dreamscape'}
+              {loading ? 'Entering...' : 'Enter Dream Vault'}
             </Button>
           </form>
 

@@ -45,7 +45,7 @@ const SharedDream = () => {
           <p className="text-slate-400 mb-6">{error}</p>
           <Link to="/">
             <Button className="rounded-full px-6 bg-white text-black hover:bg-slate-200">
-              Go to Dreamscape
+              Go to Dream Vault
             </Button>
           </Link>
         </div>
@@ -60,7 +60,7 @@ const SharedDream = () => {
         <div className="flex items-center justify-between mb-8">
           <Link to="/" className="flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors">
             <Moon className="w-6 h-6" />
-            <span className="font-serif text-xl">Dreamscape</span>
+            <span className="font-serif text-xl">Dream Vault</span>
           </Link>
         </div>
 
@@ -124,7 +124,7 @@ const SharedDream = () => {
             <p className="text-slate-400 mb-4">Start your own dream journal</p>
             <Link to="/register">
               <Button className="rounded-full px-8 py-3 bg-white text-black font-semibold hover:bg-slate-200 btn-glow">
-                Join Dreamscape
+                Join Dream Vault
               </Button>
             </Link>
           </div>
