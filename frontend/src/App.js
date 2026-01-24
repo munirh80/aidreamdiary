@@ -8,6 +8,8 @@ import Dashboard from "@/pages/Dashboard";
 import DreamList from "@/pages/DreamList";
 import DreamForm from "@/pages/DreamForm";
 import DreamDetail from "@/pages/DreamDetail";
+import DreamCalendar from "@/pages/DreamCalendar";
+import PatternAnalysis from "@/pages/PatternAnalysis";
 import Layout from "@/components/Layout";
 
 const ProtectedRoute = ({ children }) => {
@@ -72,6 +74,8 @@ function App() {
             <Route path="dreams/new" element={<DreamForm />} />
             <Route path="dreams/:id" element={<DreamDetail />} />
             <Route path="dreams/:id/edit" element={<DreamForm />} />
+            <Route path="calendar" element={<DreamCalendar />} />
+            <Route path="patterns" element={<PatternAnalysis />} />
           </Route>
         </Routes>
       </BrowserRouter>
