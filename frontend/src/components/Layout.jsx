@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import TwinklingStars from '@/components/TwinklingStars';
 
 const Layout = () => {
   const { user, logout } = useAuth();
@@ -39,6 +40,9 @@ const Layout = () => {
 
   return (
     <div className="min-h-screen bg-[#020617] starfield">
+      {/* Twinkling Stars Effect */}
+      <TwinklingStars />
+      
       {/* Desktop Sidebar */}
       <aside className="fixed left-0 top-0 h-full w-64 bg-black/90 backdrop-blur-xl border-r border-white/5 z-50 hidden md:flex flex-col p-6">
         <div className="flex items-center gap-3 mb-12">
