@@ -205,6 +205,71 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         created_at=current_user["created_at"]
     )
 
+# ============== USER SETTINGS ROUTES ==============
+
+@api_router.get("/settings", response_model=UserSettingsResponse)
+async def get_settings(current_user: dict = Depends(get_current_user)):
+    settings = await db.user_settings.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    if not settings:
+        return UserSettingsResponse()
+    return UserSettingsResponse(
+        reminder_enabled=settings.get("reminder_enabled", False),
+        reminder_time=settings.get("reminder_time", "08:00"),
+        streak_freeze_count=settings.get("streak_freeze_count", 0),
+        streak_freezes_used=settings.get("streak_freezes_used", 0)
+    )
+
+@api_router.put("/settings", response_model=UserSettingsResponse)
+async def update_settings(settings_data: UserSettingsUpdate, current_user: dict = Depends(get_current_user)):
+    update_data = {k: v for k, v in settings_data.model_dump().items() if v is not None}
+    
+    if update_data:
+        await db.user_settings.update_one(
+            {"user_id": current_user["id"]},
+            {"$set": update_data},
+            upsert=True
+        )
+    
+    settings = await db.user_settings.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    return UserSettingsResponse(
+        reminder_enabled=settings.get("reminder_enabled", False),
+        reminder_time=settings.get("reminder_time", "08:00"),
+        streak_freeze_count=settings.get("streak_freeze_count", 0),
+        streak_freezes_used=settings.get("streak_freezes_used", 0)
+    )
+
+@api_router.post("/settings/use-freeze")
+async def use_streak_freeze(current_user: dict = Depends(get_current_user)):
+    """Use a streak freeze to protect the current streak"""
+    settings = await db.user_settings.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    freeze_count = settings.get("streak_freeze_count", 0) if settings else 0
+    
+    if freeze_count <= 0:
+        raise HTTPException(status_code=400, detail="No streak freezes available")
+    
+    await db.user_settings.update_one(
+        {"user_id": current_user["id"]},
+        {
+            "$inc": {"streak_freeze_count": -1, "streak_freezes_used": 1},
+            "$set": {"last_freeze_date": datetime.now(timezone.utc).strftime("%Y-%m-%d")}
+        },
+        upsert=True
+    )
+    
+    return {"message": "Streak freeze activated!", "remaining_freezes": freeze_count - 1}
+
+@api_router.post("/settings/add-freeze")
+async def add_streak_freeze(current_user: dict = Depends(get_current_user)):
+    """Add a streak freeze (earned by reaching milestones or purchased)"""
+    await db.user_settings.update_one(
+        {"user_id": current_user["id"]},
+        {"$inc": {"streak_freeze_count": 1}},
+        upsert=True
+    )
+    
+    settings = await db.user_settings.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    return {"message": "Streak freeze added!", "total_freezes": settings.get("streak_freeze_count", 1)}
+
 # ============== DREAM ROUTES ==============
 
 @api_router.post("/dreams", response_model=DreamResponse)
