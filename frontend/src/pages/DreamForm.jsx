@@ -3,13 +3,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { Save, X, Plus, ArrowLeft } from 'lucide-react';
+import { Save, X, Plus, ArrowLeft, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { CalendarIcon } from 'lucide-react';
 
@@ -35,6 +36,7 @@ const DreamForm = () => {
   const [tags, setTags] = useState([]);
   const [themes, setThemes] = useState([]);
   const [newTag, setNewTag] = useState('');
+  const [isLucid, setIsLucid] = useState(false);
 
   useEffect(() => {
     if (isEditing) {
@@ -47,6 +49,7 @@ const DreamForm = () => {
           setDate(new Date(dream.date));
           setTags(dream.tags || []);
           setThemes(dream.themes || []);
+          setIsLucid(dream.is_lucid || false);
         } catch (error) {
           toast.error('Failed to load dream');
           navigate('/dreams');
@@ -92,7 +95,8 @@ const DreamForm = () => {
       description: description.trim(),
       date: format(date, 'yyyy-MM-dd'),
       tags,
-      themes
+      themes,
+      is_lucid: isLucid
     };
 
     try {
