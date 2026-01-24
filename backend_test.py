@@ -307,6 +307,128 @@ class DreamJournalAPITester:
         
         return success
 
+    def test_settings_endpoints(self):
+        """Test user settings endpoints"""
+        if not self.token:
+            print("❌ No token available for settings")
+            return False
+            
+        # Test get settings
+        success, response = self.run_test(
+            "Get Settings",
+            "GET",
+            "settings",
+            200
+        )
+        
+        if not success:
+            return False
+            
+        # Test update settings
+        settings_data = {
+            "reminder_enabled": True,
+            "reminder_time": "09:30",
+            "streak_freeze_count": 1
+        }
+        
+        success, response = self.run_test(
+            "Update Settings",
+            "PUT",
+            "settings",
+            200,
+            data=settings_data
+        )
+        
+        return success and response.get('reminder_enabled') == True
+
+    def test_streak_freeze_endpoints(self):
+        """Test streak freeze functionality"""
+        if not self.token:
+            print("❌ No token available for streak freeze")
+            return False
+            
+        # First add a freeze
+        success, response = self.run_test(
+            "Add Streak Freeze",
+            "POST",
+            "settings/add-freeze",
+            200
+        )
+        
+        if not success:
+            return False
+            
+        # Then use a freeze
+        success, response = self.run_test(
+            "Use Streak Freeze",
+            "POST",
+            "settings/use-freeze",
+            200
+        )
+        
+        return success and 'remaining_freezes' in response
+
+    def test_dream_sharing(self):
+        """Test dream sharing functionality"""
+        if not self.token or not self.created_dream_id:
+            print("❌ No token or dream ID available for sharing")
+            return False
+            
+        # Test share dream
+        success, response = self.run_test(
+            "Share Dream",
+            "POST",
+            f"dreams/{self.created_dream_id}/share",
+            200
+        )
+        
+        if not success or 'share_id' not in response:
+            return False
+            
+        share_id = response['share_id']
+        
+        # Test get public dream (no auth required)
+        original_token = self.token
+        self.token = None
+        
+        success, response = self.run_test(
+            "Get Public Dream",
+            "GET",
+            f"public/dream/{share_id}",
+            200
+        )
+        
+        self.token = original_token
+        
+        if not success:
+            return False
+            
+        # Test unshare dream
+        success, response = self.run_test(
+            "Unshare Dream",
+            "POST",
+            f"dreams/{self.created_dream_id}/unshare",
+            200
+        )
+        
+        return success
+
+    def test_public_dreams_endpoint(self):
+        """Test public dreams explore endpoint"""
+        # No auth required for this endpoint
+        original_token = self.token
+        self.token = None
+        
+        success, response = self.run_test(
+            "Get Public Dreams",
+            "GET",
+            "public/dreams?limit=10",
+            200
+        )
+        
+        self.token = original_token
+        return success and isinstance(response, list)
+
     def test_invalid_token(self):
         """Test API with invalid token"""
         original_token = self.token
