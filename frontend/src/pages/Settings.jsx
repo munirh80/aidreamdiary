@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
-import { Bell, Shield, Snowflake, Clock, Save, Plus } from 'lucide-react';
+import { Bell, Shield, Snowflake, Clock, Save, Plus, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
+import NotificationService from '@/services/NotificationService';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
@@ -26,12 +27,16 @@ const Settings = () => {
     streak_freeze_count: 0,
     streak_freezes_used: 0
   });
+  const [notificationPermission, setNotificationPermission] = useState('default');
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
         const response = await axios.get(`${API_URL}/settings`, getAuthHeaders());
         setSettings(response.data);
+        
+        // Check notification permission
+        setNotificationPermission(NotificationService.getPermissionStatus());
       } catch (error) {
         console.error('Error fetching settings:', error);
       } finally {
@@ -41,6 +46,31 @@ const Settings = () => {
 
     fetchSettings();
   }, [getAuthHeaders]);
+
+  const handleReminderToggle = async (checked) => {
+    if (checked) {
+      // Request notification permission
+      const granted = await NotificationService.requestPermission();
+      if (!granted) {
+        toast.error('Please allow notifications in your browser settings');
+        return;
+      }
+      setNotificationPermission('granted');
+      
+      // Schedule reminder
+      NotificationService.scheduleReminder(settings.reminder_time);
+      toast.success('Reminders enabled! You\'ll be notified daily.');
+    }
+    
+    setSettings(prev => ({ ...prev, reminder_enabled: checked }));
+  };
+
+  const handleTimeChange = (value) => {
+    setSettings(prev => ({ ...prev, reminder_time: value }));
+    if (settings.reminder_enabled) {
+      NotificationService.scheduleReminder(value);
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -125,6 +155,15 @@ const Settings = () => {
         </div>
 
         <div className="space-y-6">
+          {notificationPermission === 'denied' && (
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+              <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+              <p className="text-sm text-red-300">
+                Notifications are blocked. Please enable them in your browser settings.
+              </p>
+            </div>
+          )}
+          
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="reminder-toggle" className="text-white font-medium cursor-pointer">Enable Reminders</Label>
@@ -133,7 +172,8 @@ const Settings = () => {
             <Switch
               id="reminder-toggle"
               checked={settings.reminder_enabled}
-              onCheckedChange={(checked) => setSettings(prev => ({ ...prev, reminder_enabled: checked }))}
+              onCheckedChange={handleReminderToggle}
+              disabled={notificationPermission === 'denied'}
               data-testid="reminder-toggle"
             />
           </div>
@@ -146,7 +186,7 @@ const Settings = () => {
               </div>
               <Select
                 value={settings.reminder_time}
-                onValueChange={(value) => setSettings(prev => ({ ...prev, reminder_time: value }))}
+                onValueChange={handleTimeChange}
               >
                 <SelectTrigger className="w-32 bg-slate-800 border-white/10 text-white" data-testid="reminder-time-select">
                   <SelectValue />
