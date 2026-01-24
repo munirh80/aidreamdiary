@@ -152,7 +152,9 @@ class DreamJournalAPITester:
             "description": "I was soaring through the clouds above snow-capped mountains. The feeling of freedom was incredible, and I could see eagles flying alongside me. The landscape below was breathtaking with deep valleys and crystal clear lakes.",
             "date": datetime.now().strftime('%Y-%m-%d'),
             "tags": ["flying", "mountains", "freedom", "nature"],
-            "themes": ["Flying", "Animals", "Travel"]
+            "themes": ["Flying", "Animals", "Travel"],
+            "is_lucid": True,
+            "is_public": False
         }
         
         success, response = self.run_test(
