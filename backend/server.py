@@ -237,6 +237,10 @@ async def get_dreams(current_user: dict = Depends(get_current_user)):
         {"user_id": current_user["id"]}, 
         {"_id": 0}
     ).sort("date", -1).to_list(1000)
+    # Ensure defaults for new fields
+    for dream in dreams:
+        dream.setdefault("is_lucid", False)
+        dream.setdefault("is_public", False)
     return [DreamResponse(**dream) for dream in dreams]
 
 @api_router.get("/dreams/{dream_id}", response_model=DreamResponse)
