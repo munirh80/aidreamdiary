@@ -93,11 +93,19 @@ Create a dream application that can give insight to your dream, record and track
     - Streak freeze management (view, use, earn)
     - Account information display
 
-12. **UI/UX**
-    - Dark mystical theme with glassmorphism effects
-    - Responsive design (desktop sidebar + mobile bottom nav)
-    - Cormorant Garamond + Manrope typography
-    - Smooth animations and transitions
+12. **Push Notifications** (NEW)
+    - Service worker for background notifications
+    - Browser notification permission handling
+    - Scheduled daily reminders at custom time
+    - Click-to-action on notifications
+
+13. **Achievements System** (NEW)
+    - 16 badges across 7 categories
+    - Categories: Getting Started, Dream Collection, Consistency, Lucid Dreaming, AI Insights, Community, Exploration
+    - Progress tracking for each achievement
+    - Toast notifications when unlocking new badges
+    - Dashboard quick-view with overall progress
+    - Milestones: 7/30/100-day streaks, 10/50/100 dreams, lucid dreams, insights, shares, tags, themes
 
 ## API Endpoints
 - POST /api/auth/register - User registration
@@ -120,6 +128,8 @@ Create a dream application that can give insight to your dream, record and track
 - POST /api/settings/add-freeze - Earn a streak freeze
 - GET /api/public/dream/:shareId - Get public dream (no auth)
 - GET /api/public/dreams - List public dreams (no auth)
+- GET /api/achievements - Get all achievements with progress
+- GET /api/achievements/check - Check for newly unlocked achievements
 
 ## Prioritized Backlog
 
@@ -137,15 +147,18 @@ Create a dream application that can give insight to your dream, record and track
 - [x] Dream reminders/settings
 - [x] Public explore page
 
+- [x] Push notifications with service worker
+- [x] Achievements/badges system
+
 ### P1 (Important) - Future
-- [ ] Push notifications for reminders
-- [ ] Dream insights newsletter (weekly email)
-- [ ] Dream comparison (compare two dreams)
+- [ ] Email newsletter (weekly dream insights digest)
+- [ ] Dream comparison tool (compare two dreams side-by-side)
 - [ ] Sleep quality correlation tracking
+- [ ] Multi-language support
 
 ### P2 (Nice to Have) - Future
 - [ ] Dream symbol dictionary
 - [ ] Voice recording for dreams
 - [ ] Community dream interpretations
 - [ ] Dream mood board/visualization
-- [ ] Dream challenges/achievements
+- [ ] Dream challenges (weekly prompts)
