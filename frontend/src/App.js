@@ -2,6 +2,8 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { useEffect } from "react";
+import NotificationService from "@/services/NotificationService";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Dashboard from "@/pages/Dashboard";
@@ -13,7 +15,15 @@ import PatternAnalysis from "@/pages/PatternAnalysis";
 import SharedDream from "@/pages/SharedDream";
 import Settings from "@/pages/Settings";
 import Explore from "@/pages/Explore";
+import Achievements from "@/pages/Achievements";
 import Layout from "@/components/Layout";
+
+// Initialize service worker for notifications
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    NotificationService.registerServiceWorker();
+  });
+}
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -80,6 +90,7 @@ function App() {
             <Route path="calendar" element={<DreamCalendar />} />
             <Route path="patterns" element={<PatternAnalysis />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="achievements" element={<Achievements />} />
           </Route>
           <Route path="/explore" element={<Explore />} />
           <Route path="/shared/:shareId" element={<SharedDream />} />
