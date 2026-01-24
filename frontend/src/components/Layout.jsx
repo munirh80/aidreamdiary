@@ -1,6 +1,6 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { Home, BookOpen, PlusCircle, LogOut, Moon, User, Calendar, Brain, Globe, Settings } from 'lucide-react';
+import { Home, BookOpen, PlusCircle, LogOut, Moon, User, Calendar, Brain, Globe, Settings, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -25,6 +25,7 @@ const Layout = () => {
     { to: '/dreams/new', icon: PlusCircle, label: 'New Dream' },
     { to: '/calendar', icon: Calendar, label: 'Calendar' },
     { to: '/patterns', icon: Brain, label: 'Patterns' },
+    { to: '/achievements', icon: Trophy, label: 'Achievements' },
     { to: '/explore', icon: Globe, label: 'Explore' },
     { to: '/settings', icon: Settings, label: 'Settings' },
   ];
