@@ -342,6 +342,87 @@ async def delete_dream(dream_id: str, current_user: dict = Depends(get_current_u
         raise HTTPException(status_code=404, detail="Dream not found")
     return {"message": "Dream deleted successfully"}
 
+# ============== PUBLIC SHARING ROUTES ==============
+
+@api_router.post("/dreams/{dream_id}/share")
+async def share_dream(dream_id: str, current_user: dict = Depends(get_current_user)):
+    """Make a dream public and generate a share link"""
+    dream = await db.dreams.find_one({"id": dream_id, "user_id": current_user["id"]})
+    if not dream:
+        raise HTTPException(status_code=404, detail="Dream not found")
+    
+    share_id = str(uuid.uuid4())[:8]  # Short shareable ID
+    
+    await db.dreams.update_one(
+        {"id": dream_id},
+        {"$set": {"is_public": True, "share_id": share_id, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    return {"share_id": share_id, "message": "Dream is now public"}
+
+@api_router.post("/dreams/{dream_id}/unshare")
+async def unshare_dream(dream_id: str, current_user: dict = Depends(get_current_user)):
+    """Make a dream private again"""
+    result = await db.dreams.update_one(
+        {"id": dream_id, "user_id": current_user["id"]},
+        {"$set": {"is_public": False, "updated_at": datetime.now(timezone.utc).isoformat()}, "$unset": {"share_id": ""}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Dream not found")
+    
+    return {"message": "Dream is now private"}
+
+@api_router.get("/public/dream/{share_id}")
+async def get_public_dream(share_id: str):
+    """Get a publicly shared dream (no auth required)"""
+    dream = await db.dreams.find_one({"share_id": share_id, "is_public": True}, {"_id": 0})
+    if not dream:
+        raise HTTPException(status_code=404, detail="Dream not found or not public")
+    
+    # Get author name
+    user = await db.users.find_one({"id": dream["user_id"]}, {"_id": 0, "name": 1})
+    author_name = user.get("name", "Anonymous") if user else "Anonymous"
+    
+    return PublicDreamResponse(
+        id=dream["id"],
+        title=dream["title"],
+        description=dream["description"],
+        date=dream["date"],
+        tags=dream.get("tags", []),
+        themes=dream.get("themes", []),
+        is_lucid=dream.get("is_lucid", False),
+        ai_insight=dream.get("ai_insight"),
+        author_name=author_name,
+        created_at=dream["created_at"]
+    )
+
+@api_router.get("/public/dreams")
+async def get_public_dreams(limit: int = 20, skip: int = 0):
+    """Get recent public dreams (explore/discover feature)"""
+    dreams = await db.dreams.find(
+        {"is_public": True},
+        {"_id": 0}
+    ).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+    
+    results = []
+    for dream in dreams:
+        user = await db.users.find_one({"id": dream["user_id"]}, {"_id": 0, "name": 1})
+        author_name = user.get("name", "Anonymous") if user else "Anonymous"
+        results.append(PublicDreamResponse(
+            id=dream["id"],
+            title=dream["title"],
+            description=dream["description"],
+            date=dream["date"],
+            tags=dream.get("tags", []),
+            themes=dream.get("themes", []),
+            is_lucid=dream.get("is_lucid", False),
+            ai_insight=dream.get("ai_insight"),
+            author_name=author_name,
+            created_at=dream["created_at"]
+        ))
+    
+    return results
+
 # ============== AI INSIGHT ROUTE ==============
 
 @api_router.post("/dreams/{dream_id}/insight", response_model=InsightResponse)
