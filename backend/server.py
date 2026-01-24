@@ -533,20 +533,35 @@ async def calculate_streak(user_id: str):
     # Get unique dates
     dates = sorted(set(d["date"][:10] for d in dreams), reverse=True)
     
+    # Check for active freeze
+    settings = await db.user_settings.find_one({"user_id": user_id}, {"_id": 0})
+    last_freeze_date = settings.get("last_freeze_date") if settings else None
+    
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")
     
-    # Calculate current streak
+    # Calculate current streak (with freeze consideration)
     current_streak = 0
-    if dates and (dates[0] == today or dates[0] == yesterday):
-        check_date = datetime.strptime(dates[0], "%Y-%m-%d")
-        for date_str in dates:
-            date = datetime.strptime(date_str, "%Y-%m-%d")
-            if (check_date - date).days <= 1:
-                current_streak += 1
-                check_date = date
-            else:
-                break
+    if dates:
+        # Check if most recent dream is today, yesterday, or freeze was used yesterday
+        can_continue_streak = (
+            dates[0] == today or 
+            dates[0] == yesterday or 
+            last_freeze_date == yesterday
+        )
+        
+        if can_continue_streak:
+            check_date = datetime.strptime(dates[0], "%Y-%m-%d")
+            for i, date_str in enumerate(dates):
+                date = datetime.strptime(date_str, "%Y-%m-%d")
+                gap = (check_date - date).days
+                
+                # Allow gap of 1 day normally, or 2 if freeze was used
+                if gap <= 1 or (gap == 2 and last_freeze_date):
+                    current_streak += 1
+                    check_date = date
+                else:
+                    break
     
     # Calculate longest streak
     longest_streak = 0
