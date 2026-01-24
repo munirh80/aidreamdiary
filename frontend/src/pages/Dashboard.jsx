@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { PlusCircle, BookOpen, TrendingUp, Sparkles, ChevronRight } from 'lucide-react';
+import { PlusCircle, BookOpen, TrendingUp, Sparkles, ChevronRight, Flame, Calendar, Brain, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
@@ -61,13 +62,25 @@ const Dashboard = () => {
           <div className="text-slate-500 text-sm font-medium mb-2">This Week</div>
           <div className="font-serif text-4xl text-cyan-400">{stats?.dreams_this_week || 0}</div>
         </div>
-        <div className="stat-card col-span-2" data-testid="stat-top-themes">
-          <div className="text-slate-500 text-sm font-medium mb-3">Recurring Themes</div>
+        {/* Dream Streak Card */}
+        <div className="stat-card relative overflow-hidden" data-testid="stat-streak">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-orange-500/20 to-transparent rounded-full -translate-y-8 translate-x-8"></div>
+          <div className="text-slate-500 text-sm font-medium mb-2 flex items-center gap-2">
+            <Flame className="w-4 h-4 text-orange-400" />
+            Current Streak
+          </div>
+          <div className="font-serif text-4xl text-orange-400">{stats?.current_streak || 0}</div>
+          <div className="text-xs text-slate-500 mt-1">
+            Best: {stats?.longest_streak || 0} days
+          </div>
+        </div>
+        <div className="stat-card" data-testid="stat-top-themes">
+          <div className="text-slate-500 text-sm font-medium mb-3">Top Themes</div>
           <div className="flex flex-wrap gap-2">
             {stats?.top_themes?.length > 0 ? (
-              stats.top_themes.map((theme, i) => (
-                <span key={i} className="theme-tag">
-                  {theme.name} ({theme.count})
+              stats.top_themes.slice(0, 3).map((theme, i) => (
+                <span key={i} className="theme-tag text-xs">
+                  {theme.name}
                 </span>
               ))
             ) : (
@@ -76,6 +89,27 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Streak Motivation Banner */}
+      {stats?.current_streak > 0 && (
+        <div className="glass rounded-2xl p-6 border border-orange-500/20 bg-gradient-to-r from-orange-500/10 to-transparent" data-testid="streak-banner">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-orange-500/20 flex items-center justify-center animate-pulse-glow">
+              <Flame className="w-7 h-7 text-orange-400" />
+            </div>
+            <div>
+              <h3 className="font-serif text-xl text-white">
+                {stats.current_streak} Day Streak! 🔥
+              </h3>
+              <p className="text-slate-400 text-sm">
+                {stats.current_streak >= stats.longest_streak 
+                  ? "You're on your longest streak ever! Keep it going!"
+                  : `${stats.longest_streak - stats.current_streak} more days to beat your record!`}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-4">
@@ -89,6 +123,18 @@ const Dashboard = () => {
           <Button variant="outline" className="rounded-full px-6 py-3 border-white/20 text-white hover:bg-white/10 h-auto" data-testid="view-all-dreams-button">
             <BookOpen className="w-5 h-5 mr-2" />
             View All Dreams
+          </Button>
+        </Link>
+        <Link to="/calendar">
+          <Button variant="outline" className="rounded-full px-6 py-3 border-white/20 text-white hover:bg-white/10 h-auto" data-testid="calendar-button">
+            <Calendar className="w-5 h-5 mr-2" />
+            Calendar
+          </Button>
+        </Link>
+        <Link to="/patterns">
+          <Button variant="outline" className="rounded-full px-6 py-3 border-white/20 text-white hover:bg-white/10 h-auto" data-testid="patterns-button">
+            <Brain className="w-5 h-5 mr-2" />
+            Patterns
           </Button>
         </Link>
       </div>
