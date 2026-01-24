@@ -47,8 +47,32 @@ Create a dream application that can give insight to your dream, record and track
    - Top recurring themes
    - Top tags with counts
    - Recent dreams preview
+   - **Dream Streak display** (current & longest)
+   - **Motivational streak banner**
 
-5. **UI/UX**
+5. **Dream Calendar View** (NEW)
+   - Monthly calendar visualization
+   - Dream indicators on dates
+   - Click to view dreams for a specific date
+   - Navigate between months
+
+6. **Pattern Analysis** (NEW)
+   - Recurring symbols detection (water, flying, chase, etc.)
+   - Word cloud from dream descriptions
+   - Monthly activity chart
+   - Theme evolution over time
+
+7. **PDF Export** (NEW)
+   - Export individual dreams to PDF
+   - Export entire journal (all dreams)
+   - Styled printable format with insights
+
+8. **Dream Streak Gamification** (NEW)
+   - Track current consecutive days journaling
+   - Display longest streak record
+   - Motivational banner when on a streak
+
+9. **UI/UX**
    - Dark mystical theme with glassmorphism effects
    - Responsive design (desktop sidebar + mobile bottom nav)
    - Cormorant Garamond + Manrope typography
@@ -64,7 +88,9 @@ Create a dream application that can give insight to your dream, record and track
 - PUT /api/dreams/:id - Update dream
 - DELETE /api/dreams/:id - Delete dream
 - POST /api/dreams/:id/insight - Generate AI insight
-- GET /api/stats - Get user statistics
+- GET /api/stats - Get user statistics (includes streak)
+- GET /api/dreams/calendar/:year/:month - Get dreams for calendar view
+- GET /api/analysis/patterns - Get pattern analysis data
 
 ## Prioritized Backlog
 
@@ -72,15 +98,19 @@ Create a dream application that can give insight to your dream, record and track
 - [x] User authentication
 - [x] Dream CRUD
 - [x] AI insights
+- [x] Dream calendar view
+- [x] PDF export
+- [x] Pattern analysis
+- [x] Dream streak gamification
 
 ### P1 (Important) - Future
-- [ ] Dream pattern analysis over time
-- [ ] Export dreams to PDF
-- [ ] Dream calendar view
-- [ ] Social sharing of dreams
+- [ ] Social sharing of dreams (with privacy controls)
+- [ ] Dream reminders/notifications
+- [ ] Lucid dream tracking
+- [ ] Sleep quality correlation
 
 ### P2 (Nice to Have) - Future
 - [ ] Dream symbol dictionary
-- [ ] Sleep quality tracking
-- [ ] Mood correlation charts
 - [ ] Voice recording for dreams
+- [ ] Community dream interpretations
+- [ ] Dream mood board/visualization
