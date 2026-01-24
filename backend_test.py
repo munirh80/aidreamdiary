@@ -532,6 +532,8 @@ def main():
         ("Get Current User", tester.test_get_me),
         ("Settings Endpoints", tester.test_settings_endpoints),
         ("Streak Freeze Endpoints", tester.test_streak_freeze_endpoints),
+        ("Achievements Endpoint", tester.test_achievements_endpoint),
+        ("Achievements Check Endpoint", tester.test_achievements_check_endpoint),
         ("Create Dream", tester.test_create_dream),
         ("Get All Dreams", tester.test_get_dreams),
         ("Get Dream by ID", tester.test_get_dream_by_id),
