@@ -109,6 +109,7 @@ class ShareDreamRequest(BaseModel):
 
 class PublicDreamResponse(BaseModel):
     id: str
+    share_id: Optional[str] = None
     title: str
     description: str
     date: str
@@ -385,6 +386,7 @@ async def get_public_dream(share_id: str):
     
     return PublicDreamResponse(
         id=dream["id"],
+        share_id=dream.get("share_id"),
         title=dream["title"],
         description=dream["description"],
         date=dream["date"],
@@ -410,6 +412,7 @@ async def get_public_dreams(limit: int = 20, skip: int = 0):
         author_name = user.get("name", "Anonymous") if user else "Anonymous"
         results.append(PublicDreamResponse(
             id=dream["id"],
+            share_id=dream.get("share_id"),
             title=dream["title"],
             description=dream["description"],
             date=dream["date"],
