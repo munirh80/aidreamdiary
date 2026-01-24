@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { Moon, Sparkles, Globe, User, Search } from 'lucide-react';
+import { Moon, Sparkles, Globe, User, Search, ArrowLeft } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
@@ -48,14 +49,29 @@ const Explore = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in" data-testid="explore-page">
-      <div className="mb-8">
-        <h1 className="font-serif text-3xl md:text-4xl text-white mb-2">
-          <Globe className="w-8 h-8 inline mr-3 text-cyan-400" />
-          Explore Dreams
-        </h1>
-        <p className="text-slate-400">Discover dreams shared by the community</p>
-      </div>
+    <div className="min-h-screen bg-[#020617] starfield">
+      <div className="max-w-4xl mx-auto p-6 md:p-12 space-y-8 animate-fade-in" data-testid="explore-page">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <Link to="/" className="flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors">
+                <Moon className="w-6 h-6" />
+                <span className="font-serif text-xl">Dreamscape</span>
+              </Link>
+            </div>
+            <h1 className="font-serif text-3xl md:text-4xl text-white mb-2">
+              <Globe className="w-8 h-8 inline mr-3 text-cyan-400" />
+              Explore Dreams
+            </h1>
+            <p className="text-slate-400">Discover dreams shared by the community</p>
+          </div>
+          <Link to="/login">
+            <Button variant="outline" className="rounded-full border-white/20 text-white hover:bg-white/10">
+              Sign In
+            </Button>
+          </Link>
+        </div>
 
       {/* Search */}
       <div className="relative">
@@ -123,9 +139,15 @@ const Explore = () => {
         <div className="glass rounded-2xl p-12 text-center">
           <Moon className="w-16 h-16 text-purple-400 mx-auto mb-4 opacity-50" />
           <h3 className="font-serif text-xl text-white mb-2">No public dreams yet</h3>
-          <p className="text-slate-400">Be the first to share a dream with the community!</p>
+          <p className="text-slate-400 mb-6">Be the first to share a dream with the community!</p>
+          <Link to="/register">
+            <Button className="rounded-full px-6 bg-white text-black hover:bg-slate-200 btn-glow">
+              Join Dreamscape
+            </Button>
+          </Link>
         </div>
       )}
+      </div>
     </div>
   );
 };
