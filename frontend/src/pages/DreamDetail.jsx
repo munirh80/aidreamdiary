@@ -3,7 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { ArrowLeft, Edit, Trash2, Sparkles, Calendar, Loader2 } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, Sparkles, Calendar, Loader2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -29,6 +29,126 @@ const DreamDetail = () => {
   const [loading, setLoading] = useState(true);
   const [generatingInsight, setGeneratingInsight] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  const handleExportPDF = () => {
+    setExporting(true);
+    try {
+      // Create printable content
+      const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${dream.title} - Dream Journal</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Manrope:wght@400;500&display=swap');
+            body { 
+              font-family: 'Manrope', sans-serif; 
+              max-width: 800px; 
+              margin: 0 auto; 
+              padding: 40px;
+              color: #1e293b;
+              line-height: 1.6;
+            }
+            h1 { 
+              font-family: 'Cormorant Garamond', serif; 
+              font-size: 2.5rem;
+              margin-bottom: 0.5rem;
+              color: #0f172a;
+            }
+            .date { 
+              color: #64748b; 
+              font-size: 0.9rem;
+              margin-bottom: 2rem;
+            }
+            .tags { 
+              margin: 1.5rem 0;
+              display: flex;
+              gap: 0.5rem;
+              flex-wrap: wrap;
+            }
+            .tag { 
+              background: #f1f5f9; 
+              padding: 4px 12px; 
+              border-radius: 999px;
+              font-size: 0.8rem;
+              color: #475569;
+            }
+            .theme { 
+              background: #ecfeff; 
+              color: #0891b2;
+            }
+            .description { 
+              margin: 2rem 0;
+              font-size: 1.1rem;
+              white-space: pre-wrap;
+            }
+            .insight-section {
+              margin-top: 3rem;
+              padding: 1.5rem;
+              background: linear-gradient(135deg, #faf5ff 0%, #f0fdff 100%);
+              border-radius: 12px;
+              border-left: 4px solid #a855f7;
+            }
+            .insight-title {
+              font-family: 'Cormorant Garamond', serif;
+              font-size: 1.5rem;
+              color: #7c3aed;
+              margin-bottom: 1rem;
+            }
+            .footer {
+              margin-top: 3rem;
+              padding-top: 1rem;
+              border-top: 1px solid #e2e8f0;
+              font-size: 0.8rem;
+              color: #94a3b8;
+              text-align: center;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>${dream.title}</h1>
+          <div class="date">${format(new Date(dream.date), 'EEEE, MMMM d, yyyy')}</div>
+          
+          ${(dream.tags?.length > 0 || dream.themes?.length > 0) ? `
+            <div class="tags">
+              ${dream.tags?.map(tag => `<span class="tag">${tag}</span>`).join('') || ''}
+              ${dream.themes?.map(theme => `<span class="tag theme">${theme}</span>`).join('') || ''}
+            </div>
+          ` : ''}
+          
+          <div class="description">${dream.description}</div>
+          
+          ${dream.ai_insight ? `
+            <div class="insight-section">
+              <div class="insight-title">✨ Dream Interpretation</div>
+              <div>${dream.ai_insight.replace(/\n/g, '<br>')}</div>
+            </div>
+          ` : ''}
+          
+          <div class="footer">
+            Exported from Dreamscape - Dream Journal App<br>
+            ${format(new Date(), 'MMMM d, yyyy')}
+          </div>
+        </body>
+        </html>
+      `;
+      
+      // Open print dialog
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.onload = () => {
+        printWindow.print();
+      };
+      
+      toast.success('PDF export ready! Use the print dialog to save.');
+    } catch (error) {
+      toast.error('Failed to export dream');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   useEffect(() => {
     const fetchDream = async () => {
@@ -112,6 +232,16 @@ const DreamDetail = () => {
           </div>
 
           <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleExportPDF}
+              disabled={exporting}
+              className="border-white/20 text-white hover:bg-white/10 rounded-xl"
+              data-testid="export-button"
+            >
+              <Download className="w-4 h-4" />
+            </Button>
             <Link to={`/dreams/${id}/edit`}>
               <Button
                 variant="outline"
