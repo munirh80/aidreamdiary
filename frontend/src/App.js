@@ -10,6 +10,9 @@ import DreamForm from "@/pages/DreamForm";
 import DreamDetail from "@/pages/DreamDetail";
 import DreamCalendar from "@/pages/DreamCalendar";
 import PatternAnalysis from "@/pages/PatternAnalysis";
+import SharedDream from "@/pages/SharedDream";
+import Settings from "@/pages/Settings";
+import Explore from "@/pages/Explore";
 import Layout from "@/components/Layout";
 
 const ProtectedRoute = ({ children }) => {
@@ -76,7 +79,10 @@ function App() {
             <Route path="dreams/:id/edit" element={<DreamForm />} />
             <Route path="calendar" element={<DreamCalendar />} />
             <Route path="patterns" element={<PatternAnalysis />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="explore" element={<Explore />} />
           </Route>
+          <Route path="/shared/:shareId" element={<SharedDream />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" richColors />
