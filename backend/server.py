@@ -67,6 +67,8 @@ class DreamCreate(BaseModel):
     date: str
     tags: List[str] = []
     themes: List[str] = []
+    is_lucid: bool = False
+    is_public: bool = False
 
 class DreamUpdate(BaseModel):
     title: Optional[str] = None
@@ -74,6 +76,8 @@ class DreamUpdate(BaseModel):
     date: Optional[str] = None
     tags: Optional[List[str]] = None
     themes: Optional[List[str]] = None
+    is_lucid: Optional[bool] = None
+    is_public: Optional[bool] = None
 
 class DreamResponse(BaseModel):
     id: str
@@ -83,9 +87,37 @@ class DreamResponse(BaseModel):
     date: str
     tags: List[str]
     themes: List[str]
+    is_lucid: bool = False
+    is_public: bool = False
     ai_insight: Optional[str] = None
     created_at: str
     updated_at: str
+
+class UserSettingsUpdate(BaseModel):
+    reminder_enabled: Optional[bool] = None
+    reminder_time: Optional[str] = None  # HH:MM format
+    streak_freeze_count: Optional[int] = None
+
+class UserSettingsResponse(BaseModel):
+    reminder_enabled: bool = False
+    reminder_time: str = "08:00"
+    streak_freeze_count: int = 0
+    streak_freezes_used: int = 0
+
+class ShareDreamRequest(BaseModel):
+    dream_id: str
+
+class PublicDreamResponse(BaseModel):
+    id: str
+    title: str
+    description: str
+    date: str
+    tags: List[str]
+    themes: List[str]
+    is_lucid: bool
+    ai_insight: Optional[str] = None
+    author_name: str
+    created_at: str
 
 class InsightRequest(BaseModel):
     dream_id: str
