@@ -462,6 +462,122 @@ async def get_public_dreams(limit: int = 20, skip: int = 0):
     
     return results
 
+# ============== ACHIEVEMENTS ROUTES ==============
+
+async def calculate_achievements(user_id: str) -> List[Achievement]:
+    """Calculate user's achievements based on their activity"""
+    
+    # Get user stats
+    total_dreams = await db.dreams.count_documents({"user_id": user_id})
+    lucid_dreams = await db.dreams.count_documents({"user_id": user_id, "is_lucid": True})
+    dreams_with_insight = await db.dreams.count_documents({"user_id": user_id, "ai_insight": {"$ne": None}})
+    shared_dreams = await db.dreams.count_documents({"user_id": user_id, "is_public": True})
+    
+    # Get unique themes and tags
+    dreams = await db.dreams.find({"user_id": user_id}, {"_id": 0, "themes": 1, "tags": 1}).to_list(1000)
+    unique_themes = set()
+    unique_tags = set()
+    for dream in dreams:
+        unique_themes.update(dream.get("themes", []))
+        unique_tags.update(dream.get("tags", []))
+    
+    # Calculate streak
+    streak_data = await calculate_streak(user_id)
+    longest_streak = streak_data["longest"]
+    
+    # Get stored achievements
+    stored_achievements = await db.achievements.find({"user_id": user_id}, {"_id": 0}).to_list(100)
+    stored_dict = {a["achievement_id"]: a for a in stored_achievements}
+    
+    achievements = []
+    newly_unlocked = []
+    
+    for ach_def in ACHIEVEMENTS:
+        ach_id = ach_def["id"]
+        stored = stored_dict.get(ach_id, {})
+        
+        # Calculate progress based on achievement type
+        progress = 0
+        if ach_id == "first_dream" or ach_id.startswith("dreams_"):
+            progress = total_dreams
+        elif ach_id.startswith("streak_"):
+            progress = longest_streak
+        elif ach_id.startswith("lucid_"):
+            progress = lucid_dreams
+        elif ach_id.startswith("insight_"):
+            progress = dreams_with_insight
+        elif ach_id.startswith("share_"):
+            progress = shared_dreams
+        elif ach_id == "themes_5":
+            progress = len(unique_themes)
+        elif ach_id == "tags_10":
+            progress = len(unique_tags)
+        
+        target = ach_def["target"]
+        was_unlocked = stored.get("unlocked", False)
+        is_unlocked = progress >= target
+        
+        # Track newly unlocked achievements
+        if is_unlocked and not was_unlocked:
+            newly_unlocked.append(ach_id)
+            await db.achievements.update_one(
+                {"user_id": user_id, "achievement_id": ach_id},
+                {"$set": {
+                    "unlocked": True,
+                    "unlocked_at": datetime.now(timezone.utc).isoformat(),
+                    "progress": progress
+                }},
+                upsert=True
+            )
+        elif progress != stored.get("progress", 0):
+            await db.achievements.update_one(
+                {"user_id": user_id, "achievement_id": ach_id},
+                {"$set": {"progress": progress}},
+                upsert=True
+            )
+        
+        achievements.append(Achievement(
+            id=ach_id,
+            name=ach_def["name"],
+            description=ach_def["description"],
+            icon=ach_def["icon"],
+            category=ach_def["category"],
+            unlocked=is_unlocked,
+            unlocked_at=stored.get("unlocked_at") if is_unlocked else None,
+            progress=min(progress, target),
+            target=target
+        ))
+    
+    return achievements, newly_unlocked
+
+@api_router.get("/achievements", response_model=AchievementsResponse)
+async def get_achievements(current_user: dict = Depends(get_current_user)):
+    """Get user's achievements"""
+    achievements, _ = await calculate_achievements(current_user["id"])
+    unlocked_count = sum(1 for a in achievements if a.unlocked)
+    
+    return AchievementsResponse(
+        achievements=achievements,
+        total_unlocked=unlocked_count,
+        total_achievements=len(ACHIEVEMENTS)
+    )
+
+@api_router.get("/achievements/check")
+async def check_new_achievements(current_user: dict = Depends(get_current_user)):
+    """Check for newly unlocked achievements"""
+    achievements, newly_unlocked = await calculate_achievements(current_user["id"])
+    
+    new_achievements = [a for a in achievements if a.id in newly_unlocked]
+    
+    return {
+        "newly_unlocked": [
+            {"id": a.id, "name": a.name, "icon": a.icon, "description": a.description}
+            for a in new_achievements
+        ],
+        "total_unlocked": sum(1 for a in achievements if a.unlocked),
+        "total_achievements": len(ACHIEVEMENTS)
+    }
+
 # ============== AI INSIGHT ROUTE ==============
 
 @api_router.post("/dreams/{dream_id}/insight", response_model=InsightResponse)
