@@ -251,7 +251,43 @@ class DreamJournalAPITester:
             200
         )
         
-        expected_fields = ['total_dreams', 'dreams_this_week', 'top_tags', 'top_themes']
+        expected_fields = ['total_dreams', 'dreams_this_week', 'top_tags', 'top_themes', 'current_streak', 'longest_streak']
+        return success and all(field in response for field in expected_fields)
+
+    def test_calendar_endpoint(self):
+        """Test calendar endpoint for specific month"""
+        if not self.token:
+            print("❌ No token available for calendar")
+            return False
+            
+        # Test current month
+        current_date = datetime.now()
+        year = current_date.year
+        month = current_date.month
+        
+        success, response = self.run_test(
+            "Get Calendar Data",
+            "GET",
+            f"dreams/calendar/{year}/{month}",
+            200
+        )
+        
+        return success and 'dreams_by_date' in response
+
+    def test_pattern_analysis(self):
+        """Test pattern analysis endpoint"""
+        if not self.token:
+            print("❌ No token available for pattern analysis")
+            return False
+            
+        success, response = self.run_test(
+            "Get Pattern Analysis",
+            "GET",
+            "analysis/patterns",
+            200
+        )
+        
+        expected_fields = ['total_analyzed', 'recurring_symbols', 'theme_trends', 'common_words', 'monthly_activity']
         return success and all(field in response for field in expected_fields)
 
     def test_delete_dream(self):
