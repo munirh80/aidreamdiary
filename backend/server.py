@@ -120,6 +120,42 @@ class PublicDreamResponse(BaseModel):
     author_name: str
     created_at: str
 
+class Achievement(BaseModel):
+    id: str
+    name: str
+    description: str
+    icon: str
+    category: str
+    unlocked: bool = False
+    unlocked_at: Optional[str] = None
+    progress: int = 0
+    target: int = 1
+
+class AchievementsResponse(BaseModel):
+    achievements: List[Achievement]
+    total_unlocked: int
+    total_achievements: int
+
+# Achievement definitions
+ACHIEVEMENTS = [
+    {"id": "first_dream", "name": "Dream Catcher", "description": "Record your first dream", "icon": "🌙", "category": "basics", "target": 1},
+    {"id": "dreams_10", "name": "Dreamer", "description": "Record 10 dreams", "icon": "✨", "category": "dreams", "target": 10},
+    {"id": "dreams_50", "name": "Dream Keeper", "description": "Record 50 dreams", "icon": "📚", "category": "dreams", "target": 50},
+    {"id": "dreams_100", "name": "Dream Master", "description": "Record 100 dreams", "icon": "🏆", "category": "dreams", "target": 100},
+    {"id": "streak_7", "name": "Week Warrior", "description": "Maintain a 7-day streak", "icon": "🔥", "category": "streaks", "target": 7},
+    {"id": "streak_30", "name": "Monthly Mystic", "description": "Maintain a 30-day streak", "icon": "⚡", "category": "streaks", "target": 30},
+    {"id": "streak_100", "name": "Century Dreamer", "description": "Maintain a 100-day streak", "icon": "💫", "category": "streaks", "target": 100},
+    {"id": "lucid_1", "name": "Awakened", "description": "Record your first lucid dream", "icon": "👁️", "category": "lucid", "target": 1},
+    {"id": "lucid_10", "name": "Lucid Explorer", "description": "Record 10 lucid dreams", "icon": "🔮", "category": "lucid", "target": 10},
+    {"id": "lucid_25", "name": "Dream Walker", "description": "Record 25 lucid dreams", "icon": "🌟", "category": "lucid", "target": 25},
+    {"id": "insight_1", "name": "Seeker", "description": "Get your first AI dream insight", "icon": "🔍", "category": "insights", "target": 1},
+    {"id": "insight_10", "name": "Enlightened", "description": "Get 10 AI dream insights", "icon": "💡", "category": "insights", "target": 10},
+    {"id": "share_1", "name": "Open Book", "description": "Share your first dream publicly", "icon": "📖", "category": "social", "target": 1},
+    {"id": "share_5", "name": "Storyteller", "description": "Share 5 dreams publicly", "icon": "📢", "category": "social", "target": 5},
+    {"id": "themes_5", "name": "Pattern Finder", "description": "Use 5 different themes", "icon": "🎭", "category": "exploration", "target": 5},
+    {"id": "tags_10", "name": "Tag Master", "description": "Create 10 unique tags", "icon": "🏷️", "category": "exploration", "target": 10},
+]
+
 class InsightRequest(BaseModel):
     dream_id: str
 
