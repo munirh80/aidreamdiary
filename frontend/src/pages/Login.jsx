@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Moon, Eye, EyeOff } from 'lucide-react';
+import TwinklingStars from '@/components/TwinklingStars';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -33,8 +34,9 @@ const Login = () => {
   return (
     <div className="min-h-screen auth-bg flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/70"></div>
+      <TwinklingStars />
       
-      <div className="relative w-full max-w-md">
+      <div className="relative w-full max-w-md z-10">
         <div className="glass rounded-3xl p-8 md:p-10 shadow-2xl animate-fade-in">
           {/* Logo */}
           <div className="flex items-center justify-center gap-3 mb-8">
