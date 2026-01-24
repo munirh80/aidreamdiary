@@ -26,12 +26,13 @@ Create a dream application that can give insight to your dream, record and track
 ## What's Been Implemented (January 2025)
 1. **Authentication System**
    - User registration with email/password
-   - JWT-based login with 7-day token expiry
+   - JWT-based login with 30-day token expiry
    - Protected routes on frontend
 
 2. **Dream Journal Features**
    - Create dreams with title, description, date
    - Add custom tags and select recurring themes
+   - **Lucid dream tracking** toggle
    - View all dreams with search/filter
    - Edit and delete dreams
    - View individual dream details
@@ -42,41 +43,61 @@ Create a dream application that can give insight to your dream, record and track
    - Regenerate new interpretations
 
 4. **Dashboard**
-   - Total dreams count
+   - Total dreams count (with lucid dream count)
    - Dreams this week
    - Top recurring themes
    - Top tags with counts
    - Recent dreams preview
    - **Dream Streak display** (current & longest)
    - **Motivational streak banner**
+   - **Streak freeze indicator**
 
-5. **Dream Calendar View** (NEW)
+5. **Dream Calendar View**
    - Monthly calendar visualization
    - Dream indicators on dates
    - Click to view dreams for a specific date
    - Navigate between months
 
-6. **Pattern Analysis** (NEW)
+6. **Pattern Analysis**
    - Recurring symbols detection (water, flying, chase, etc.)
    - Word cloud from dream descriptions
    - Monthly activity chart
    - Theme evolution over time
 
-7. **PDF Export** (NEW)
+7. **PDF Export**
    - Export individual dreams to PDF
    - Export entire journal (all dreams)
    - Styled printable format with insights
 
-8. **Dream Streak Gamification** (NEW)
+8. **Dream Streak Gamification**
    - Track current consecutive days journaling
    - Display longest streak record
    - Motivational banner when on a streak
+   - **Streak freeze feature** to skip a day without breaking streak
 
-9. **UI/UX**
-   - Dark mystical theme with glassmorphism effects
-   - Responsive design (desktop sidebar + mobile bottom nav)
-   - Cormorant Garamond + Manrope typography
-   - Smooth animations and transitions
+9. **Social Sharing** (NEW)
+   - Share individual dreams publicly with a unique link
+   - Privacy controls - make dreams public/private
+   - Public dream badges
+   - Copy share link functionality
+
+10. **Explore Page** (NEW)
+    - Discover public dreams from the community
+    - Search public dreams
+    - No authentication required
+    - Links to full dream view
+
+11. **Settings Page** (NEW)
+    - Dream reminder toggle (browser notifications)
+    - Customizable reminder time
+    - Streak freeze management (view, use, earn)
+    - Account information display
+
+12. **UI/UX**
+    - Dark mystical theme with glassmorphism effects
+    - Responsive design (desktop sidebar + mobile bottom nav)
+    - Cormorant Garamond + Manrope typography
+    - Smooth animations and transitions
 
 ## API Endpoints
 - POST /api/auth/register - User registration
@@ -88,9 +109,17 @@ Create a dream application that can give insight to your dream, record and track
 - PUT /api/dreams/:id - Update dream
 - DELETE /api/dreams/:id - Delete dream
 - POST /api/dreams/:id/insight - Generate AI insight
-- GET /api/stats - Get user statistics (includes streak)
+- POST /api/dreams/:id/share - Make dream public
+- POST /api/dreams/:id/unshare - Make dream private
+- GET /api/stats - Get user statistics (includes streak, lucid count)
 - GET /api/dreams/calendar/:year/:month - Get dreams for calendar view
 - GET /api/analysis/patterns - Get pattern analysis data
+- GET /api/settings - Get user settings
+- PUT /api/settings - Update user settings
+- POST /api/settings/use-freeze - Use a streak freeze
+- POST /api/settings/add-freeze - Earn a streak freeze
+- GET /api/public/dream/:shareId - Get public dream (no auth)
+- GET /api/public/dreams - List public dreams (no auth)
 
 ## Prioritized Backlog
 
@@ -102,15 +131,21 @@ Create a dream application that can give insight to your dream, record and track
 - [x] PDF export
 - [x] Pattern analysis
 - [x] Dream streak gamification
+- [x] Streak freeze/grace period
+- [x] Social sharing with privacy
+- [x] Lucid dream tracking
+- [x] Dream reminders/settings
+- [x] Public explore page
 
 ### P1 (Important) - Future
-- [ ] Social sharing of dreams (with privacy controls)
-- [ ] Dream reminders/notifications
-- [ ] Lucid dream tracking
-- [ ] Sleep quality correlation
+- [ ] Push notifications for reminders
+- [ ] Dream insights newsletter (weekly email)
+- [ ] Dream comparison (compare two dreams)
+- [ ] Sleep quality correlation tracking
 
 ### P2 (Nice to Have) - Future
 - [ ] Dream symbol dictionary
 - [ ] Voice recording for dreams
 - [ ] Community dream interpretations
 - [ ] Dream mood board/visualization
+- [ ] Dream challenges/achievements
