@@ -135,6 +135,33 @@ const Dashboard = () => {
         </div>
       )}
 
+      {/* Achievements Progress */}
+      <Link to="/achievements">
+        <div className="glass rounded-2xl p-6 border border-amber-500/20 hover:border-amber-500/40 transition-all cursor-pointer group" data-testid="achievements-card">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center">
+                <Trophy className="w-6 h-6 text-amber-400" />
+              </div>
+              <div>
+                <h3 className="font-medium text-white group-hover:text-amber-300 transition-colors">Achievements</h3>
+                <p className="text-sm text-slate-400">
+                  {achievementStats.total_unlocked} of {achievementStats.total_achievements} unlocked
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                <span className="text-2xl font-serif text-amber-400">
+                  {Math.round((achievementStats.total_unlocked / achievementStats.total_achievements) * 100)}%
+                </span>
+              </div>
+              <ChevronRight className="w-5 h-5 text-slate-600 group-hover:text-amber-400 transition-colors" />
+            </div>
+          </div>
+        </div>
+      </Link>
+
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-4">
         <Link to="/dreams/new">
