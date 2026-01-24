@@ -1,7 +1,9 @@
-# Dream Journal App - PRD
+# Dream Vault App - PRD
 
 ## Original Problem Statement
 Create a dream application that can give insight to your dream, record and track journal
+
+## App Name: Dream Vault
 
 ## User Choices
 - AI Dream Insights: Claude Sonnet 4.5 (via Emergent LLM Key)
