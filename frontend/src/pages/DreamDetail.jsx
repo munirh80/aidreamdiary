@@ -3,7 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { ArrowLeft, Edit, Trash2, Sparkles, Calendar, Loader2, Download } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, Sparkles, Calendar, Loader2, Download, Share2, Lock, Globe, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -16,6 +16,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { toast } from 'sonner';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
@@ -30,6 +37,38 @@ const DreamDetail = () => {
   const [generatingInsight, setGeneratingInsight] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    setSharing(true);
+    try {
+      if (dream.is_public) {
+        // Unshare
+        await axios.post(`${API_URL}/dreams/${id}/unshare`, {}, getAuthHeaders());
+        setDream(prev => ({ ...prev, is_public: false, share_id: null }));
+        toast.success('Dream is now private');
+      } else {
+        // Share
+        const response = await axios.post(`${API_URL}/dreams/${id}/share`, {}, getAuthHeaders());
+        setDream(prev => ({ ...prev, is_public: true, share_id: response.data.share_id }));
+        setShareDialogOpen(true);
+      }
+    } catch (error) {
+      toast.error('Failed to update sharing settings');
+    } finally {
+      setSharing(false);
+    }
+  };
+
+  const copyShareLink = () => {
+    const shareUrl = `${window.location.origin}/shared/${dream.share_id}`;
+    navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+    toast.success('Link copied to clipboard!');
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleExportPDF = () => {
     setExporting(true);
@@ -232,6 +271,16 @@ const DreamDetail = () => {
           </div>
 
           <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleShare}
+              disabled={sharing}
+              className={`rounded-xl ${dream.is_public ? 'border-green-500/30 text-green-400 hover:bg-green-500/10' : 'border-white/20 text-white hover:bg-white/10'}`}
+              data-testid="share-button"
+            >
+              {dream.is_public ? <Globe className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
+            </Button>
             <Button
               variant="outline"
               size="icon"
