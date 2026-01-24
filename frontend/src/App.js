@@ -80,8 +80,8 @@ function App() {
             <Route path="calendar" element={<DreamCalendar />} />
             <Route path="patterns" element={<PatternAnalysis />} />
             <Route path="settings" element={<Settings />} />
-            <Route path="explore" element={<Explore />} />
           </Route>
+          <Route path="/explore" element={<Explore />} />
           <Route path="/shared/:shareId" element={<SharedDream />} />
         </Routes>
       </BrowserRouter>
