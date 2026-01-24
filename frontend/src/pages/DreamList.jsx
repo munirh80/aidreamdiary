@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { PlusCircle, Search, Sparkles, BookOpen, Filter } from 'lucide-react';
+import { PlusCircle, Search, Sparkles, BookOpen, Filter, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { toast } from 'sonner';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
@@ -24,6 +25,120 @@ const DreamList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterTag, setFilterTag] = useState('all');
   const [allTags, setAllTags] = useState([]);
+
+  const handleExportAll = () => {
+    if (dreams.length === 0) {
+      toast.error('No dreams to export');
+      return;
+    }
+
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Dream Journal Export</title>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Manrope:wght@400;500&display=swap');
+          body { 
+            font-family: 'Manrope', sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 40px;
+            color: #1e293b;
+          }
+          h1 { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
+          }
+          .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 3rem;
+          }
+          .dream { 
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            page-break-inside: avoid;
+          }
+          .dream-title { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+          }
+          .dream-date { 
+            color: #64748b; 
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+          }
+          .tags { 
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+          }
+          .tag { 
+            background: #f1f5f9; 
+            padding: 2px 10px; 
+            border-radius: 999px;
+            font-size: 0.75rem;
+          }
+          .theme { background: #ecfeff; color: #0891b2; }
+          .description { 
+            white-space: pre-wrap;
+            line-height: 1.6;
+          }
+          .insight {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #faf5ff;
+            border-radius: 8px;
+            border-left: 3px solid #a855f7;
+            font-size: 0.9rem;
+          }
+          .footer {
+            margin-top: 2rem;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.8rem;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Dream Journal</h1>
+        <div class="subtitle">${dreams.length} dreams • Exported ${format(new Date(), 'MMMM d, yyyy')}</div>
+        
+        ${dreams.map(dream => `
+          <div class="dream">
+            <div class="dream-title">${dream.title}</div>
+            <div class="dream-date">${format(new Date(dream.date), 'EEEE, MMMM d, yyyy')}</div>
+            ${(dream.tags?.length > 0 || dream.themes?.length > 0) ? `
+              <div class="tags">
+                ${dream.tags?.map(tag => `<span class="tag">${tag}</span>`).join('') || ''}
+                ${dream.themes?.map(theme => `<span class="tag theme">${theme}</span>`).join('') || ''}
+              </div>
+            ` : ''}
+            <div class="description">${dream.description}</div>
+            ${dream.ai_insight ? `<div class="insight"><strong>AI Insight:</strong><br>${dream.ai_insight.replace(/\n/g, '<br>')}</div>` : ''}
+          </div>
+        `).join('')}
+        
+        <div class="footer">Dreamscape - Dream Journal App</div>
+      </body>
+      </html>
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.onload = () => {
+      printWindow.print();
+    };
+    
+    toast.success('Journal export ready!');
+  };
 
   useEffect(() => {
     const fetchDreams = async () => {
@@ -87,12 +202,25 @@ const DreamList = () => {
           <h1 className="font-serif text-3xl md:text-4xl text-white mb-2">Dream Journal</h1>
           <p className="text-slate-400">{dreams.length} dreams recorded</p>
         </div>
-        <Link to="/dreams/new">
-          <Button className="rounded-full px-6 bg-white text-black font-semibold hover:bg-slate-200 btn-glow" data-testid="new-dream-button">
-            <PlusCircle className="w-5 h-5 mr-2" />
-            New Dream
-          </Button>
-        </Link>
+        <div className="flex gap-3">
+          {dreams.length > 0 && (
+            <Button
+              variant="outline"
+              onClick={handleExportAll}
+              className="rounded-full px-6 border-white/20 text-white hover:bg-white/10"
+              data-testid="export-all-button"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Export All
+            </Button>
+          )}
+          <Link to="/dreams/new">
+            <Button className="rounded-full px-6 bg-white text-black font-semibold hover:bg-slate-200 btn-glow" data-testid="new-dream-button">
+              <PlusCircle className="w-5 h-5 mr-2" />
+              New Dream
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Filters */}
