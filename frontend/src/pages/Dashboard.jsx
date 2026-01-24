@@ -57,6 +57,11 @@ const Dashboard = () => {
         <div className="stat-card" data-testid="stat-total-dreams">
           <div className="text-slate-500 text-sm font-medium mb-2">Total Dreams</div>
           <div className="font-serif text-4xl text-white">{stats?.total_dreams || 0}</div>
+          {stats?.lucid_dreams > 0 && (
+            <div className="text-xs text-purple-400 mt-1">
+              ✨ {stats.lucid_dreams} lucid
+            </div>
+          )}
         </div>
         <div className="stat-card" data-testid="stat-this-week">
           <div className="text-slate-500 text-sm font-medium mb-2">This Week</div>
@@ -70,8 +75,11 @@ const Dashboard = () => {
             Current Streak
           </div>
           <div className="font-serif text-4xl text-orange-400">{stats?.current_streak || 0}</div>
-          <div className="text-xs text-slate-500 mt-1">
-            Best: {stats?.longest_streak || 0} days
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-xs text-slate-500">Best: {stats?.longest_streak || 0}</span>
+            {stats?.streak_freezes > 0 && (
+              <span className="text-xs text-cyan-400">❄️ {stats.streak_freezes}</span>
+            )}
           </div>
         </div>
         <div className="stat-card" data-testid="stat-top-themes">
