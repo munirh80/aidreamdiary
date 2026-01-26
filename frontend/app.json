@@ -7,9 +7,10 @@
     "icon": "./assets/images/icon.png",
     "scheme": "dreamvault",
     "userInterfaceStyle": "dark",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.dreamvault.app",
       "infoPlist": {
         "NSCalendarsUsageDescription": "Schedule dream reminders"
       }
@@ -20,7 +21,6 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#0a0a1a"
       },
-      "edgeToEdgeEnabled": true,
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.SCHEDULE_EXACT_ALARM"
@@ -53,7 +53,10 @@
       "typedRoutes": true
     },
     "extra": {
-      "EXPO_PUBLIC_BACKEND_URL": "https://dreamnexus.preview.emergentagent.com"
+      "EXPO_PUBLIC_BACKEND_URL": "https://dreamnexus.preview.emergentagent.com",
+      "eas": {
+        "projectId": "dream-vault"
+      }
     }
   }
 }
