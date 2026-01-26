@@ -20,6 +20,7 @@ expo-env.d.ts
 
 # Metro
 .metro-health-check*
+.metro-cache/
 
 # debug
 npm-debug.*
@@ -37,3 +38,21 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+# Windows
+AppData/
+*.log
+*.ldb
+Thumbs.db
+Desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build artifacts
+*.apk
+*.aab
+*.ipa
