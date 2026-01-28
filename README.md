@@ -96,10 +96,11 @@ npm test
 ```
 
 ## Project Structure
-- `/assets` - Images and static assets
-- `/backend` - Backend API code
-- `/frontend` - Frontend React Native code
+- `/assets` - Images and static assets for mobile app
+- `/backend` - Backend API code (Python)
+- `/frontend` - Frontend React web application (Create React App)
 - `/tests` - Test files
+- Root level - Expo React Native mobile app configuration
 
 ## Additional Resources
 - [Expo Documentation](https://docs.expo.dev/)
