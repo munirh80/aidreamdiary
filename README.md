@@ -37,7 +37,7 @@ This will build for both Android and iOS using the preview profile.
 
 Choose the build command based on your needs:
 
-#### Quick Preview Builds (Default - APK for Android)
+#### Quick Preview Builds (Default - AAB for Android)
 ```bash
 npm run build                    # Build both platforms (preview)
 npm run build:android            # Build Android only (preview)
@@ -80,9 +80,9 @@ npm run build:prod               # Build both platforms (production)
 
 The project uses three build profiles defined in `eas.json`:
 
-- **development**: Internal testing, includes dev tools
-- **preview**: Internal distribution, APK for Android
-- **production**: Store submission, app bundle for Android
+- **development**: Internal testing, includes dev tools, APK for Android
+- **preview**: Internal distribution and testing, AAB (app bundle) for Google Play
+- **production**: Store submission, AAB (app bundle) for Google Play
 
 ### Monitoring Builds
 
