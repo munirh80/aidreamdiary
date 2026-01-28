@@ -53,7 +53,7 @@
       "typedRoutes": true
     },
     "extra": {
-      "EXPO_PUBLIC_BACKEND_URL": "https://dreamnexus.preview.emergentagent.com",
+      "EXPO_PUBLIC_BACKEND_URL": "https://app-completion-33.preview.emergentagent.com",
       "eas": {
         "projectId": "dream-vault"
       }
