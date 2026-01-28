@@ -7,31 +7,26 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
-      },
-      "ios": {
-        "buildType": "simulator"
       }
     },
     "preview": {
       "distribution": "internal",
       "android": {
         "buildType": "apk"
-      },
-      "ios": {
-        "buildType": "simulator"
       }
     },
     "production": {
       "distribution": "store",
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "app-bundle",
+        "image": "latest"
       }
     }
   },
   "submit": {
     "production": {
       "android": {
-        "serviceAccount": "google-play-service-account.json",
+        "serviceAccountKeyPath": "google-play-service-account.json",
         "track": "internal"
       }
     }
