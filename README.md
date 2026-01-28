@@ -37,7 +37,7 @@ This will build for both Android and iOS using the preview profile.
 
 Choose the build command based on your needs:
 
-#### Quick Preview Builds (Default - AAB for Android)
+#### Preview Builds (AAB for Google Play Testing)
 ```bash
 npm run build                    # Build both platforms (preview)
 npm run build:android            # Build Android only (preview)
