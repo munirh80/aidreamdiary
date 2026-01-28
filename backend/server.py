@@ -370,10 +370,11 @@ async def get_calendar(year: int, month: int, user: dict = Depends(get_current_u
     else:
         end_date = f"{year}-{month + 1:02d}-01"
     
+    # Optimized query - fetch only required fields
     dreams = await db.dreams.find({
         "user_id": ObjectId(user["_id"]),
         "date": {"$gte": start_date, "$lt": end_date}
-    }).to_list(100)
+    }, {"_id": 1, "date": 1, "title": 1, "is_lucid": 1}).to_list(100)
     
     # Group by date
     calendar_data = {}
