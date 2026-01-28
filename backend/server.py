@@ -221,8 +221,12 @@ async def login(credentials: UserLogin):
 # ============== DREAMS ROUTES ==============
 
 @api_router.get("/dreams", response_model=List[DreamResponse])
-async def get_dreams(user: dict = Depends(get_current_user)):
-    dreams = await db.dreams.find({"user_id": ObjectId(user["_id"])}).sort("date", -1).to_list(1000)
+async def get_dreams(user: dict = Depends(get_current_user), limit: int = 100, skip: int = 0):
+    # Optimized query with pagination
+    dreams = await db.dreams.find(
+        {"user_id": ObjectId(user["_id"])},
+        {"_id": 1, "title": 1, "description": 1, "date": 1, "tags": 1, "themes": 1, "is_lucid": 1, "is_public": 1, "ai_insight": 1, "created_at": 1, "updated_at": 1, "user_id": 1}
+    ).sort("date", -1).skip(skip).limit(limit).to_list(limit)
     return [serialize_dream(d) for d in dreams]
 
 @api_router.post("/dreams", response_model=DreamResponse)
@@ -415,8 +419,8 @@ async def get_stats(user: dict = Depends(get_current_user)):
         "is_lucid": True
     })
     
-    # Calculate streak
-    dreams = await db.dreams.find({"user_id": user_id}).sort("date", -1).to_list(1000)
+    # Calculate streak - optimized to fetch only date field
+    dreams = await db.dreams.find({"user_id": user_id}, {"date": 1}).sort("date", -1).to_list(1000)
     dates = sorted(set(d["date"] for d in dreams), reverse=True)
     
     current_streak = 0
@@ -492,8 +496,8 @@ async def get_achievements(user: dict = Depends(get_current_user)):
     public_dreams = await db.dreams.count_documents({"user_id": user_id, "is_public": True})
     insight_dreams = await db.dreams.count_documents({"user_id": user_id, "ai_insight": {"$ne": None}})
     
-    # Get unique themes and tags
-    dreams = await db.dreams.find({"user_id": user_id}).to_list(1000)
+    # Get unique themes and tags - optimized to fetch only required fields
+    dreams = await db.dreams.find({"user_id": user_id}, {"themes": 1, "tags": 1, "date": 1}).to_list(1000)
     unique_themes = set()
     unique_tags = set()
     dates = set()
@@ -557,7 +561,8 @@ async def get_achievements(user: dict = Depends(get_current_user)):
 @api_router.get("/analysis/patterns", response_model=PatternAnalysis)
 async def get_patterns(user: dict = Depends(get_current_user)):
     user_id = ObjectId(user["_id"])
-    dreams = await db.dreams.find({"user_id": user_id}).to_list(1000)
+    # Optimized to fetch only fields needed for pattern analysis
+    dreams = await db.dreams.find({"user_id": user_id}, {"themes": 1, "tags": 1, "description": 1, "date": 1, "is_lucid": 1}).to_list(1000)
     
     if not dreams:
         return PatternAnalysis(
