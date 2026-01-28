@@ -5,9 +5,15 @@
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
-    "android": "expo build:android",
-    "ios": "expo build:ios",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
     "web": "expo start --web",
+    "build": "eas build --platform all --profile preview",
+    "build:dev": "eas build --platform all --profile development",
+    "build:preview": "eas build --platform all --profile preview",
+    "build:prod": "eas build --platform all --profile production",
+    "build:android": "eas build --platform android --profile preview",
+    "build:ios": "eas build --platform ios --profile preview",
     "eject": "expo eject",
     "test": "jest --watch"
   },
