@@ -96,12 +96,12 @@ npm test
 ```
 
 ## Project Structure
+- `/app` - Expo Router routes for the mobile app (required when using `expo-router/entry` as the entrypoint)
 - `/assets` - Images and static assets for mobile app
 - `/backend` - Backend API code (Python)
 - `/frontend` - Frontend React web application (Create React App)
 - `/tests` - Test files
 - Root level - Expo React Native mobile app configuration
-
 ## Additional Resources
 - [Expo Documentation](https://docs.expo.dev/)
 - [EAS Build Documentation](https://docs.expo.dev/build/introduction/)
